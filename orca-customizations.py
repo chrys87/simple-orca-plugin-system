@@ -51,7 +51,7 @@ def SetupShortcutAndHandle(fun, scriptname, key, shiftkey, ctrlkey, altkey):
     functions.append(fun)
     orca.settings.keyBindingsMap["default"] = myKeyBindings
 
-def id_generator(size=30, chars=string.ascii_letters):
+def id_generator(size=7, chars=string.ascii_letters):
     return ''.join(random.choice(chars) for _ in range(size))
 
 def parseFileName(filepath):
@@ -108,7 +108,9 @@ if not loaded:
         scriptname, key, shiftkey, ctrlkey, altkey, startnotify, stopnotify, blockcall, showstderr = \
           parseFileName	(currscript)
         if key != 'ERROR':
-            fun_name = id_generator()
+            fun_name = ''
+            while fun_name == '' or fun_name + 'T' in globals() or fun_name in globals():
+                fun_name = id_generator()
             exec(buildScriptFunctions(fun_name, currscript, scriptname, startnotify, stopnotify, blockcall, showstderr))
             if blockcall:
                 fun = globals()[fun_name]
