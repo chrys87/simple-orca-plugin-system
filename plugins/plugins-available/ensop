@@ -1,0 +1,11 @@
+#!/bin/bash
+pluginpath=$HOME/.local/share/orca/plugins/plugins-enabled
+if [ -e $pluginpath/$(basename "$1") ]; then
+    echo "$1 is already enabled."
+else
+    if [[ -x $1 ]]; then
+        chmod +x "$1"
+    fi
+    mkdir -p $pluginpath/
+    ln "$1" $pluginpath/
+fi

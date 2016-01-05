@@ -1,0 +1,6 @@
+#!/bin/bash
+if [ -e "$1" ]; then
+    unlink "$1"
+else
+    echo "$1 is not enabled."
+fi
