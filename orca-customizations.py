@@ -75,7 +75,8 @@ def parseFileName(filepath):
         blockcall = 'blockcall' in filenamehelper
         showstderr = 'showstderr' in filenamehelper
         if len(key) != 1: #for now no special keys, but more valid data
-            return '', 'ERROR', False, False, False, False, False, False, False # for the return I realy should use a dict
+        # for the return I realy should use a dict
+            return '', 'ERROR', False, False, False, False, False, False, False 
         return scriptname, key, shiftkey, ctrlkey, altkey, startnotify, stopnotify, blockcall, showstderr
     except:
         return '', 'ERROR', False, False, False, False, False, False, False
