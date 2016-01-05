@@ -1,0 +1,13 @@
+#!/bin/bash
+#change the path if you installed it on an other location
+cd ~/.local/share/orca/plugins/plugins-available
+
+if [ -e "../plugins-enabled/$1" ]; then
+    echo "$1 is already enabled."
+else
+    if [[ -x $1 ]]; then
+        chmod +x "$1"
+    fi
+    ln "$1" ../plugins-enabled/
+    echo "$1 enabled."
+fi
