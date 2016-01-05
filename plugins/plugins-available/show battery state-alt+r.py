@@ -38,7 +38,7 @@ def showBatteryStatus():
 		except IOError:
 			Message = "Battery " +str(Battery) +  " could not opened." # Battery can not open	
 
-		outputMessage(Message)
+		print(Message)
 		
 	if (Battery == 0):
 		Message = "No Battery found."
