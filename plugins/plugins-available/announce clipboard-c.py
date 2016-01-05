@@ -6,6 +6,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 gi.require_version("Gdk", "3.0")
 from gi.repository import Gtk, Gdk
+import os
 
 def printClipboard():
     Message = ""
@@ -24,14 +25,14 @@ def printClipboard():
             for Uri in UriList:
                 ObjectNo += 1
                 if (os.path.isdir(Uri)):
-                    Message = Message + "Folder " #Folder
+                    Message = Message + "Folder" #Folder
                 if (os.path.isfile(Uri)):
-                    Message = Message + "File " #File
+                    Message = Message + "File" #File
                 if (os.path.ismount(Uri)):
-                    Message = Message + "Disk " #Mountpoint	 
+                    Message = Message + "Disk" #Mountpoint	 
                 if (os.path.islink(Uri)):
-                    Message = Message + "Link " #Link
-            Message = Message + " " + Uri[Uri.rfind('/') + 1:]
+                    Message = Message + "Link" #Link
+                Message += " " + Uri[Uri.rfind('/') + 1:] + " "
             if (ObjectNo > 1):			
                 Message = str(ObjectNo) + " Objects in the clipboard " + Message # X Objects in Clipboard Object Object		
             else:
