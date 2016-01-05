@@ -4,7 +4,6 @@ cd ~/.local/share/orca/plugins/plugins-available
 
 if [ -e "../plugins-enabled/$1" ]; then
     unlink "../plugins-enabled/$1"
-    echo "$1 disabled."
 else
     echo "$1 is not enabled."
 fi

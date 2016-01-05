@@ -9,5 +9,4 @@ else
         chmod +x "$1"
     fi
     ln "$1" ../plugins-enabled/
-    echo "$1 enabled."
 fi
