@@ -1,1 +1,0 @@
-/home/chrys/.local/share/orca/plugins/plugins-available/say Desktop No-x.sh

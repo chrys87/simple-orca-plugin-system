@@ -1,6 +1,7 @@
 #!/bin/bash
-if [ -e "$1" ]; then
-    unlink "$1"
+pluginpath=$HOME/.local/share/orca/plugins/plugins-enabled
+if [ -e $pluginpath/$(basename "$1") ]; then
+    unlink $pluginpath/$(basename "$1")
 else
     echo "$1 is not enabled."
 fi
