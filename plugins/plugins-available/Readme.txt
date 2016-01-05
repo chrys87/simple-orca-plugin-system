@@ -44,7 +44,7 @@ contains the enabled (active) scripts. this folder will be read by orca.
 
 2.2 Administration tools
 the tools are located in the plugins-available folder 
-./en <scriptname> #enables an script so its active
-./dis <scriptname> #disable the script, its not used anymore
+./ensop <scriptname> #enables an script so its active (enable simple orca plugin)
+./dissop <scriptname> #disable the script, its not used anymore (disenable simple orca plugin)
 they just create links in plugins-enabled and make the scripts executable
 to reload the plugins in orca, you have to restart orca
