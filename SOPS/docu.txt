@@ -40,9 +40,11 @@ chmod +x <youplugin>
 
 2 Administration
 2.1 Folders
-plugins-available:
-contains all existing plugin and the administration scripts. Its the plugin repository.
-plugins-enabled:
+~/.config/SOPS/plugins-available:
+here you could put your own plugins.
+/usr/share/SOPS/plugins-available:
+this contains the default plugins and the administration tools.
+~/.config/SOPS/plugins-enabled:
 contains the enabled (active) plugin. this folder will be read by orca.
 
 2.2 Administration tools

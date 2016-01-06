@@ -1,5 +1,5 @@
 #!/bin/bash
-pluginpath=$HOME/.local/share/orca/plugins/plugins-enabled
+pluginpath=$HOME/.config/SOPS/plugins-enabled
 if [ -e $pluginpath/$(basename "$1") ]; then
     unlink $pluginpath/$(basename "$1")
 else

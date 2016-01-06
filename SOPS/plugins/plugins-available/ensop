@@ -1,7 +1,7 @@
 #!/bin/bash
 
 installpath=/usr/share/SOPS
-pluginpath=$HOME/.local/share/orca/plugins/plugins-enabled
+pluginpath=$HOME/.config/SOPS/plugins-enabled
 filename=$(basename "$1")
 # Error checking, make sure the plugin actually exists
 if ! [ -f "$1" ]; then
