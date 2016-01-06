@@ -1,5 +1,6 @@
 install
-1. place the parent folder "OSPS" where you want
+1. place the parent folder "SOPS" (Simple Orca Plugin System) in /usr/share/
+sudo cp -r SOPS /usr/share/
 2. run as user:
 $./install-for-current-user.sh
 
@@ -8,7 +9,7 @@ use ensop and dissop to enable and disable plugins, see docu.txt section 2.
 by default not all plugins are activated
 
 remove
-rm -r OSPS # remove the mainfolder
+sudo rm -r /usr/share/SOPS # remove the mainfolder
 rm -r ~/.local/share/orca/plugins # remove the enabled plugins in orca config
 rm ~/.local/share/orca/SimplePluginLoader.py # remove loader from orca config
 remove the following sectin from file ~/.local/share/orca/orca-customizations.py:
