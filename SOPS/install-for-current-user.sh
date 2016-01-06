@@ -10,6 +10,7 @@ fi
 # include it in orca
 mkdir -p "$HOME/.local/share/orca/plugins/plugins-enabled"
 cp "SimplePluginLoader.py" $HOME/.local/share/orca/
+echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "# Start SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "import os" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "import importlib.util" >> "$HOME/.local/share/orca/orca-customizations.py"
