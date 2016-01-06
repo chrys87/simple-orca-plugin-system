@@ -7,6 +7,10 @@ if [ -e "$HOME/.local/share/orca/orca-customizations.py" ]; then
         exit 1
     fi
 fi
+
+#user plugins
+mkdir -p "$HOME/.config/SOPS/plugins-available"
+
 # include it in orca
 mkdir -p "$HOME/.local/share/orca/plugins/plugins-enabled"
 ln -s "/usr/share/SOPS/SimplePluginLoader.py" $HOME/.local/share/orca/
