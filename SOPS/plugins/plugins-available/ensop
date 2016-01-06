@@ -7,7 +7,7 @@ if [ -e "$pluginpath/$filename" ]; then
     exit 1
 else
     mkdir -p $pluginpath/
-    ln -s "$installpath/$1" $pluginpath/
+    ln -s "$installpath/plugins/plugins-available/$1" $pluginpath/
 fi
 exit 0
 
