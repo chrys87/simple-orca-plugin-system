@@ -1,8 +1,15 @@
-install
+install manually
 1. place the parent folder "SOPS" (Simple Orca Plugin System) in /usr/share/
 sudo cp -r SOPS /usr/share/
 2. run as user:
-$./install-for-current-user.sh
+cd /usr/share/SOPS
+./install-for-current-user.sh
+
+packages
+1.1 Archlinux AUR - simpleorcapluginsystem-git
+2. run as user:
+cd /usr/share/SOPS
+./install-for-current-user.sh
 
 administration
 use ensop and dissop to enable and disable plugins, see docu.txt section 2.
