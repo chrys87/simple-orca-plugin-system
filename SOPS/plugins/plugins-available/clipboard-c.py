@@ -34,15 +34,15 @@ def printClipboard():
                     Message = Message + "Link" #Link
                 Message += " " + Uri[Uri.rfind('/') + 1:] + " "
             if (ObjectNo > 1):			
-                Message = str(ObjectNo) + " Objects in the clipboard " + Message # X Objects in Clipboard Object Object		
+                Message = str(ObjectNo) + " Objects in clipboard " + Message # X Objects in Clipboard Object Object		
             else:
-                Message = str(ObjectNo) + " Objects in the clipboard " + Message # 1 Object in Clipboard Object	
+                Message = str(ObjectNo) + " Object in clipboard " + Message # 1 Object in Clipboard Object	
         else:		
             Message = "Text in clipboard " + ClipboardText # Text in Clipboard
 
     if (ClipboardImage != None):
         FoundClipboardContent = True
-        Message = "The clipboard contains image data" # Image is in Clipboard
+        Message = "The clipboard contains a image" # Image is in Clipboard
 
     if (not FoundClipboardContent):
         Message = "The clipboard is empty"
