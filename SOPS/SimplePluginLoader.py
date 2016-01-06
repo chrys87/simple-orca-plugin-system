@@ -13,7 +13,7 @@ from subprocess import Popen, PIPE
 import orca.orca
 
 #settings
-scriptrepo = os.path.expanduser('~')+"/.local/share/orca/plugins/plugins-enabled/"
+scriptrepo = os.path.expanduser('~')+"/.config/SOPS/"
 
 #globals
 functions = []
