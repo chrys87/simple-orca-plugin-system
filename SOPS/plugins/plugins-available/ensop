@@ -9,6 +9,6 @@ else
         chmod +x "$1"
     fi
     mkdir -p $pluginpath/
-    ln "$1" $pluginpath/
+    ln -s "$1" $pluginpath/
 fi
 exit 0
