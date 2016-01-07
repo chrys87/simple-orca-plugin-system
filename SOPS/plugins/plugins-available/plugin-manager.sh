@@ -6,7 +6,7 @@
 
 # Add sites to check to the pluginSites array.
 pluginSites=(
-    'https://stormdragon.tk/orca-plugins/'
+    'https://stormdragon.tk/orca-plugins/index.php'
     )
 get_xdg_path()
 {
@@ -31,15 +31,15 @@ die()
 get_action()
 {
 local __actionVariable="$1"
-answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select an action:" --radiolist --column "Select" --column "Action" TRUE "Enable/Disable Plugins" FALSE "Install New Plugins")"
+answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select an action:" --radiolist --column "" --column "" TRUE "Configure Plugins" FALSE "Install New Plugins")"
 if [[ $__actionVariable ]]; then
-eval $__actionVariable="'$answer'"
+eval $__actionVariable="'${answer,,}'"
 else
-echo "$answer"
+echo "${answer,,}"
 fi
 }
 
-enable_disable_plugins()
+configure_plugins()
 {
 local ifs="$IFS"
 IFS=$'\n'
@@ -49,34 +49,41 @@ pluginList="${pluginList}"$'\n'
 fi
 pluginList="${pluginList}$(ls -1 /usr/share/SOPS/plugins/plugins-available/*-*.*)"
 local pluginName=""
+declare -A local pluginPath
 local checkList=""
 local i=""
-echo "$pluginList"
 for i in $pluginList ; do
 pluginName="$((basename "$i") | cut -d '-' -f1 | sed 's/startnotify\|blockcall\|stopnotify//')"
-ls "$xdgPath/plugins-enabled/*$pluginName"* &> /dev/null
-if [ $? -eq 2 ]; then
-checkList="${checkList}FALSE"$'\n'"${pluginName}"$'\n'
+pluginPath[$pluginName]="$i"
+if ! ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$pluginName]##*/}" &> /dev/null ; then
+checkList="${checkList}FALSE"$'\n'"${pluginName}"$'\n'"Disabled"$'\n'
 else
-checkList="${checkList}TRUE"$'\n'"${pluginName}"$'\n'
+checkList="${checkList}FALSE"$'\n'"${pluginName}"$'\n'"Enabled"$'\n'
 fi
 done
-answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins::" --checklist --column "" --column "" $checkList | tr '|' $'\n')"
-echo "$answer"
+items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins::" --checklist --column "" --column "" --column "" $checkList | tr '|' $'\n')"
+for i in $items ; do
+if ! ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
+ln -s "${pluginPath[$i]}" "${xdgPath}/plugins-enabled/"
+else
+unlink "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}"
+fi
+done
 IFS="$ifs"
+if [ -n "$items" ]; then
+echo "Plugins updated! Restarting Orca..."
+orca -r &
+fi
 }
 
-install_plugins()
+install_new_plugins()
 {
 die "Not emplimented yet"
 }
 
 get_xdg_path
 get_action action
-if [ "$action" = "Enable/Disable Plugins" ]; then
-enable_disable_plugins
-fi
-if [ "$action" = "Install New Plugins" ]; then
-install_plugins
+if [ -n "$action" ]; then
+${action// /_}
 fi
 exit 0
