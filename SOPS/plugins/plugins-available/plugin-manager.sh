@@ -31,7 +31,7 @@ die()
 get_action()
 {
 local __actionVariable="$1"
-answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select an action:" --radiolist --column "Select" --column "Action" FALSE "Enable/Disable Plugins" FALSE "Install New Plugins")"
+answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select an action:" --radiolist --column "Select" --column "Action" TRUE "Enable/Disable Plugins" FALSE "Install New Plugins")"
 if [[ $__actionVariable ]]; then
 eval $__actionVariable="'$answer'"
 else
@@ -41,7 +41,7 @@ fi
 
 enable_disable_plugins()
 {
-local pluginList="$(ls "${xdgPath}/plugins-available/*-*.*")"
+local pluginList="$(ls ${xdgPath}/plugins-available/*-*.*)"
 pluginList="${pluginList} $(ls /usr/share/SOPS/plugins/plugins-available/*-*.*)"
 local pluginName=""
 local checkList=""
@@ -55,7 +55,7 @@ else
 checkList="${checkList}TRUE ${pluginName} "
 fi
 done
-answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins::" --checklist --column "" --column "" $checkList)"
+answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins::" --checklist --column "" --column "" $checkList | tr '|' $'\n')"
 echo "$answer"
 }
 
