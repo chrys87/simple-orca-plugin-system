@@ -41,13 +41,17 @@ fi
 
 enable_disable_plugins()
 {
-SAVEIFS=$IFS
+local ifs="$IFS"
 IFS=$'\n'
-#local pluginList="$(ls ${xdgPath}/plugins-available/*-*.*)"
-pluginList="${pluginList}$(ls /usr/share/SOPS/plugins/plugins-available/*-*.*)"
+local pluginList="$(ls -1 ${xdgPath}/plugins-available/*-*.*)"
+if [ -n "$pluginList" ]; then
+pluginList="${pluginList}"$'\n'
+fi
+pluginList="${pluginList}$(ls -1 /usr/share/SOPS/plugins/plugins-available/*-*.*)"
 local pluginName=""
 local checkList=""
 local i=""
+echo "$pluginList"
 for i in $pluginList ; do
 pluginName="$((basename "$i") | cut -d '-' -f1 | sed 's/startnotify\|blockcall\|stopnotify//')"
 ls "$xdgPath/plugins-enabled/*$pluginName"* &> /dev/null
@@ -59,7 +63,7 @@ fi
 done
 answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins::" --checklist --column "" --column "" $checkList | tr '|' $'\n')"
 echo "$answer"
-IFS=$SAVEIFS
+IFS="$ifs"
 }
 
 install_plugins()
