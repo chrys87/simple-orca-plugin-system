@@ -27,6 +27,5 @@ echo "# End SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$HOME/.local/share/orca/or
 cd "./plugins/plugins-available/"
 ./ensop "workspacenumber-x.sh"
 ./ensop "clipboard-c.py"
-./ensop "battery-alt+r.py"
-./ensop "weather-startnotify+control+alt+w.sh"
+
 exit 0
