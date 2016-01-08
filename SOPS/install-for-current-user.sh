@@ -28,6 +28,7 @@ echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
 cd "./plugins/plugins-available/"
 ../../tools/ensop workspacenumber.sh
 ../../tools/ensop clipboard.py
+../../tools/ensop plugin_manager-control+p.sh
 
 cd "$HOME/.config/SOPS/plugins-enabled"
 mv workspacenumber.sh workspacenumber-x.sh
