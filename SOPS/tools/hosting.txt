@@ -1,0 +1,91 @@
+<?php
+/* To use this file on your server, rename it to index.php
+To add your site to the plugin manager, contact Storm dragon or Chrys
+The only other files that should be in the directory with index.php are the plugins you want to host.
+When hosting plugins, do not assign keys to them, this will be done at runtime.
+Correct, plugin.sh
+Incorrect: plugin-alt+shift+whatever.sh
+This is released under the terms of the WTFPL http://wtfpl.net */
+
+// Enter the information you want to share publically in the provided variables
+$email = ""; // I recommend spaces and write dot and at
+$gnusocial = ""; // full webfinger, e.g, storm@social.stormdragon.tk
+$irc = ""; // server #channel as name, e.g. irc.netwirc.tk #talkingarch as storm_dragon
+$twitter = ""; // Twitter username no @
+// If the following variable is not true, you will not offer to host any files, even if the above variables are set.
+$hosting = false;
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>List of plugins for Orca</title>
+<meta name="robots" content="noindex" />
+<meta name="description" content="List of plugins for Orca." />
+<meta name="keywords" content"orca,screenreader,plugins" />
+</head>
+<body>
+<h2>Orca Plugins</h2>
+<p>
+The list of plugins are not links. To install the listed plugins run the plugin manager in Orca, orca+control+shift+P by default.
+</p>
+<?php
+if ("$hosting" == true)
+{?>
+<h2>Hosting</h2>
+<p>
+If you want your plugin hosted here, feel free to contact me. Malicious or poorly written plugins will be rejected. Also, I may refuse any plugin for any reason.
+</p>
+<?php
+if ("$email" != "")
+{?>
+<p>
+To contact me via email, remove spaces and change spelled punctuation <?php echo "$email"; ?>
+</p>
+<?php }
+if ("$gnusocial" != "")
+{?>
+<p>
+Contact me on gnusocial <a href="http://<?php echo substr($gnusocial, strlen(strtok($gnusocial, "@")) + 1) . "/" . strtok($gnusocial, "@") . "\">$gnusocial</a>"; ?>
+</p>
+<?php }
+if ("$irc" != "")
+{?>
+<p>
+You can contact me on irc. I am usually in channel <?php echo "$irc"; ?>
+</p>
+<?php }
+if ("$twitter" != "")
+{?>
+<p>
+Contact me on twitter <a href="http://twitter.com/<?php echo "$twitter\">@$twitter</a>"; ?>
+</p>
+<?php }
+}
+//Make an array to hold list of plugins.
+$plugins = array();
+//Create a handler for the directory.
+$handler = opendir(".");
+while ($file = readdir($handler))
+{
+//If file isn't this directory or its parent, add it to the results.
+if (($file != ".") && ($file != "..") && ($file != "index.php"))
+{
+$plugins[] = $file;
+}
+}
+//Close the handler.
+closedir($handler);
+?>
+<h2>Plugin list</h2>
+<pre>
+<!-- begin plugin list -->
+<?php
+foreach ($plugins as $i)
+{
+echo "$i\n";
+} ?>
+<!-- end plugin list -->
+</pre>
+</body>
+</html>
