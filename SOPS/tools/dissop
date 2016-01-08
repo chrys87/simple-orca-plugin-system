@@ -3,7 +3,7 @@ pluginpath=$HOME/.config/SOPS/plugins-enabled
 if [ -e $pluginpath/$(basename "$1") ]; then
     unlink $pluginpath/$(basename "$1")
 else
-    echo "$1 is not enabled."
+    echo $(basename "$1")" is not enabled."
     exit 1
 fi
 exit 0
