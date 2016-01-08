@@ -1,8 +1,8 @@
 #!/bin/bash
 
-installpath=/usr/share/SOPS
-pluginpath=$HOME/.config/SOPS/plugins-enabled
-filename=$(basename "$1")
+installpath="/usr/share/SOPS"
+pluginpath="${XDG_CONFIG_HOME:-$HOME/.config}/SOPS/plugins-enabled"
+filename="${1##*/}"
 # Error checking, make sure the plugin actually exists
 if ! [ -f "$1" ]; then
     echo "Plugin $filename not found."
@@ -13,8 +13,7 @@ if [ -e "$pluginpath/$filename" ]; then
     echo "$1 is already enabled."
     exit 1
 else
-    mkdir -p $pluginpath/
-    ln -s "$installpath/plugins/plugins-available/$1" $pluginpath/
+    mkdir -p "$pluginpath/"
+    ln -s "$installpath/plugins/plugins-available/$filename" "$pluginpath/"
 fi
 exit 0
-

@@ -1,9 +1,9 @@
 #!/bin/bash
-pluginpath=$HOME/.config/SOPS/plugins-enabled
-if [ -e $pluginpath/$(basename "$1") ]; then
-    unlink $pluginpath/$(basename "$1")
+pluginpath="${XDG_CONFIG_HOME:-$HOME/.config}/SOPS/plugins-enabled"
+if [ -e "$pluginpath/${1##*/}" ]; then
+    unlink "$pluginpath/${1##*/}"
 else
-    echo $(basename "$1")" is not enabled."
+    echo "${1##*/} is not enabled."
     exit 1
 fi
 exit 0
