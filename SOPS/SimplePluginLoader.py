@@ -13,7 +13,7 @@ from subprocess import Popen, PIPE
 import orca.orca
 
 #settings
-scriptrepo = os.path.expanduser('~')+"/.config/SOPS/plugins-enabled/"
+pluginrepo = os.path.expanduser('~')+"/.config/SOPS/plugins-enabled/"
 
 #globals
 functions = []
@@ -28,7 +28,7 @@ def outputMessage(Message):
         orca.braille.displayMessage(Message)
 
 def SetupShortcutAndHandle(fun, settings):
-    inputEventHandlers.append(orca.input_event.InputEventHandler(fun, settings['scriptname'], settings))
+    inputEventHandlers.append(orca.input_event.InputEventHandler(fun, settings['pluginname'], settings))
     # just the orca modifier
     if not settings['shiftkey'] and not settings['ctrlkey'] and not settings['altkey']:
         myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.defaultModifierMask, orca.keybindings.ORCA_MODIFIER_MASK, inputEventHandlers[len(inputEventHandlers) - 1]))
@@ -53,7 +53,7 @@ def id_generator(size=7, chars=string.ascii_letters):
 def initSettings():
     settings={
     'filepath':'',
-    'scriptname':'',
+    'pluginname':'',
     'functionname':'',
     'key':'',
     'shiftkey':False,
@@ -70,13 +70,13 @@ def parseFileName(filepath, settings):
     try:
         filename = os.path.basename(filepath) #filename
         filename = os.path.splitext(filename)[0].lower() #remove extension if we have one
-        #remove scriptname seperated by -
+        #remove pluginname seperated by -
         filenamehelper = filename.split('-')
         filename = filenamehelper[len(filenamehelper) - 1 ]
         settings['file'] = filepath
-        settings['scriptname'] = 'NoNameAvailable'
+        settings['pluginname'] = 'NoNameAvailable'
         if len(filenamehelper) == 2:
-            settings['scriptname'] = filenamehelper[0]
+            settings['pluginname'] = filenamehelper[0]
         #now get shortcuts seperated by +
         filenamehelper = filename.split('+')
         settings['key'] = filenamehelper[len(filenamehelper) - 1]
@@ -92,24 +92,21 @@ def parseFileName(filepath, settings):
             settings = initSettings()
             settings['key'] = 'ERROR'
             return settings
-#            return '', 'ERROR', False, False, False, False, False, False, False 
         return settings
-#        return scriptname, key, shiftkey, ctrlkey, altkey, startnotify, stopnotify, blockcall, showstderr
     except:
         settings = initSettings()
         settings['key'] = 'ERROR'
         return settings
-        #return '', 'ERROR', False, False, False, False, False, False, False
 
-def buildScriptFunctions(settings):
-    currscript = "\'\"" + settings['file'] + "\"\'"
+def buildpluginFunctions(settings):
+    currplugin = "\'\"" + settings['file'] + "\"\'"
     fun_body = "def " + settings['functionname'] + "(script, inputEvent=None):\n"
-    scriptname = settings['scriptname']
+    pluginname = settings['pluginname']
     if settings['blockcall']:
-       scriptname = "blocking " + scriptname
+       pluginname = "blocking " + pluginname
     if settings['startnotify']:
-        fun_body +="  outputMessage('start " + scriptname + "')\n"    
-    fun_body +="  p = Popen(" + currscript + ", stdout=PIPE, stderr=PIPE, shell=True)\n"
+        fun_body +="  outputMessage('start " + pluginname + "')\n"    
+    fun_body +="  p = Popen(" + currplugin + ", stdout=PIPE, stderr=PIPE, shell=True)\n"
     fun_body +="  stdout, stderr = p.communicate()\n"
     fun_body +="  message = ''\n"
     fun_body +="  if stdout:\n"
@@ -118,22 +115,22 @@ def buildScriptFunctions(settings):
     fun_body +="    message += ' error: ' + str(stderr, \"utf-8\")\n"
     fun_body +="  outputMessage( message)\n"
     if settings['stopnotify']:
-        fun_body +="  outputMessage('finish " + scriptname + "')\n"
+        fun_body +="  outputMessage('finish " + pluginname + "')\n"
     fun_body +="  return True\n\n"
     fun_body +="def " + settings['functionname'] + "T(script, inputEvent=None):\n"
     fun_body +="  _thread.start_new_thread("+ settings['functionname'] + ",(script, inputEvent))\n\n"
     return fun_body
 
 if not loaded:
-    scriptlist = glob.glob(scriptrepo+'*')
-    for currscript in scriptlist:
+    pluginlist = glob.glob(pluginrepo+'*')
+    for currplugin in pluginlist:
         settings = initSettings()
-        settings = parseFileName(currscript, settings)
+        settings = parseFileName(currplugin, settings)
         if not settings['key'] in ['','ERROR']:
             settings['functionname'] = ''
             while settings['functionname'] == '' or settings['functionname'] + 'T' in globals() or settings['functionname'] in globals():
                 settings['functionname'] = id_generator()
-            exec(buildScriptFunctions(settings))
+            exec(buildpluginFunctions(settings))
             if settings['blockcall']:
                 fun = globals()[settings['functionname']]
             else:
