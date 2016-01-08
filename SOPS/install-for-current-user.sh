@@ -8,12 +8,12 @@ if [ -e "$HOME/.local/share/orca/orca-customizations.py" ]; then
     fi
 fi
 
-#user plugins
+#create structure in home
 mkdir -p "$HOME/.config/SOPS/plugins-available"
-
-# include it in orca
 mkdir -p "$HOME/.config/SOPS/plugins-enabled"
 ln -s "/usr/share/SOPS/SimplePluginLoader.py" $HOME/.config/SOPS/
+
+# include it in orca
 echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "# Start SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "import os" >> "$HOME/.local/share/orca/orca-customizations.py"
@@ -22,10 +22,11 @@ echo "spec = importlib.util.spec_from_file_location('SimplePluginLoader', os.pat
 echo "SimplePluginLoaderModule = importlib.util.module_from_spec(spec)" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "spec.loader.exec_module(SimplePluginLoaderModule)" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "# End SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$HOME/.local/share/orca/orca-customizations.py"
+echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
 
 #enable some scripts by default
 cd "./plugins/plugins-available/"
-./ensop "workspacenumber-x.sh"
-./ensop "clipboard-c.py"
+../../tools/ensop "workspacenumber-x.sh"
+../../tools/ensop "clipboard-c.py"
 
 exit 0
