@@ -69,7 +69,7 @@ def initSettings():
 def parseFileName(filepath, settings):
     try:
         filename = os.path.basename(filepath) #filename
-        filename = os.path.splitext(filename)[0] #remove extension if we have one
+        filename = os.path.splitext(filename)[0].lower() #remove extension if we have one
         #remove scriptname seperated by -
         filenamehelper = filename.split('-')
         filename = filenamehelper[len(filenamehelper) - 1 ]
