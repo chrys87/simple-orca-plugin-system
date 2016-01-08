@@ -26,7 +26,11 @@ echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
 
 #enable some scripts by default
 cd "./plugins/plugins-available/"
-../../tools/ensop "workspacenumber-x.sh"
-../../tools/ensop "clipboard-c.py"
+../../tools/ensop workspacenumber.sh
+../../tools/ensop clipboard.py
+
+cd "$HOME/.config/SOPS/plugins-enabled"
+mv workspacenumber.sh workspacenumber-x.sh
+mv clipboard.py clipboard-c.py
 
 exit 0
