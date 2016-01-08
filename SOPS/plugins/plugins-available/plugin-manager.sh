@@ -61,7 +61,7 @@ else
 checkList="${checkList}FALSE"$'\n'"${pluginName}"$'\n'"Enabled"$'\n'
 fi
 done
-local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins::" --checklist --column "" --column "" --column "" $checkList | tr '|' $'\n')"
+local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins:" --checklist --ok-label "Configure" --column "" --column "" --column "" $checkList | tr '|' $'\n')"
 for i in $items ; do
 if ! ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
 ln -s "${pluginPath[$i]}" "${xdgPath}/plugins-enabled/"
@@ -78,6 +78,7 @@ fi
 
 install_new_plugins()
 {
+echo "Checking for plugins, please wait..."
 local i=""
 local checkList
 declare -A local pluginList=""
@@ -89,7 +90,29 @@ for i in $plugins ; do
 checkList="${checkList}FALSE ${i##*/} "
 pluginList[${i##*/}]="$i"
 done
-local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Install plugins:" --checklist --column "" --column "" $checkList | tr '|' $'\n')"
+local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Install plugins:" --checklist --ok-label "Install" --column "" --column "" $checkList | tr '|' $'\n')"
+if [ -z "$items" ]; then
+exit 0
+fi
+local keyList=""
+checkList="$(echo {a..z} {0..9} | sed 's/\([a-z]\)/FALSE \1/g')"
+checkList="FALSE alt FALSE control FALSE shift $checkList"
+for i in $items ; do
+fileName="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select keyboard shortcut for $i:" --checklist --separator + --column "" --column "" $checkList)"
+if [ -z "$fileName" ]; then
+exit 0
+fi
+fileName="${i%.*}-${fileName}.${i##*.}"
+echo "Installing ${i##*/}"
+wget -O "${xdgPath}/plugins-available/$fileName" "${pluginList[$i]}" || die "Could not install plugin $i"
+chmod +x "${xdgPath}/plugins-available/$fileName" || die "Could not set execute permissions for plugin $i"
+ln -s "${xdgPath}/plugins-available/$fileName" "${xdgPath}/plugins-enabled/$fileName" || die "Could not link plugin $i"
+echo "Plugin $i installed successfully."
+done
+if [ -n "$i" ]; then
+echo "Restarting orca"
+orca -r &
+fi
 }
 
 get_xdg_path
