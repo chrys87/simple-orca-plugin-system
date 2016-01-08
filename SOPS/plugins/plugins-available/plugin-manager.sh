@@ -61,7 +61,7 @@ else
 checkList="${checkList}FALSE"$'\n'"${pluginName}"$'\n'"Enabled"$'\n'
 fi
 done
-items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins::" --checklist --column "" --column "" --column "" $checkList | tr '|' $'\n')"
+local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins::" --checklist --column "" --column "" --column "" $checkList | tr '|' $'\n')"
 for i in $items ; do
 if ! ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
 ln -s "${pluginPath[$i]}" "${xdgPath}/plugins-enabled/"
@@ -78,7 +78,18 @@ fi
 
 install_new_plugins()
 {
-die "Not emplimented yet"
+local i=""
+local checkList
+declare -A local pluginList=""
+local plugins
+for i in $pluginSites ; do
+plugins=($(echo -n "${i%/*}/";curl -s "$i" | grep -A 10000 '<!-- begin plugin list -->' | grep -B 10000 '<!-- end plugin list -->' | grep -v '<!--'))
+done
+for i in $plugins ; do
+checkList="${checkList}FALSE ${i##*/} "
+pluginList[${i##*/}]="$i"
+done
+local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Install plugins:" --checklist --column "" --column "" $checkList | tr '|' $'\n')"
 }
 
 get_xdg_path
