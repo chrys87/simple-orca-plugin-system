@@ -5,6 +5,7 @@
 # in Arch the AUR package is called weather
 # in Debian, Mint and Ubuntu its called weather-util
 # this is the default of the software
+
 if [ -e /usr/bin/weather ]; then
     weather nuernberg | tail -n  +5
 fi
