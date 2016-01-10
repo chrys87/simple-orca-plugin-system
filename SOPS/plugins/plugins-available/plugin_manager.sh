@@ -86,7 +86,7 @@ local plugins
 for i in $pluginSites ; do
 plugins=($(echo -n "${i%/*}/";curl -s "$i" | grep -A 10000 '<!-- begin plugin list -->' | grep -B 10000 '<!-- end plugin list -->' | grep -v '<!--'))
 done
-for i in $plugins ; do
+for i in ${plugins[@]} ; do
 checkList="${checkList}FALSE ${i##*/} "
 pluginList[${i##*/}]="$i"
 done
