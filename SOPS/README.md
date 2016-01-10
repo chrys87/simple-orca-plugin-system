@@ -2,7 +2,6 @@ install manually
 1. place the parent folder "SOPS" (Simple Orca Plugin System) in /usr/share/
 sudo cp -r SOPS /usr/share/
 2. run as user:
-cd /usr/share/SOPS
 /usr/share/SOPS/install-for-current-user.sh # copy all the needed stuff to orca
 
 install via packagemanager
