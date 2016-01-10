@@ -81,7 +81,7 @@ def parseFileName(filepath, settings):
         #now get shortcuts seperated by __+__
         filenamehelper = filename.split('__+__')
         if len([y for y in map(str.lower, filenamehelper) if 'parameters' in y]) == 1:
-            settings['parameters'] = [y for y in filenamehelper if 'parameters' in map(str.lower, y)][0] ## TODO
+            settings['parameters'] = [y for y in map(str.lower, filenamehelper) if 'parameters' in y][0] ## TODO
             settings['parameters'] = settings['parameters'][10:]
         settings['key'] = filenamehelper[len(filenamehelper) - 1].lower()
         settings['shiftkey'] = 'shift' in map(str.lower, filenamehelper)
