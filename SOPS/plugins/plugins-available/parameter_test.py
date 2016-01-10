@@ -1,6 +1,6 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
-# print parameters
+#could used to print parameters passed by "parameters arg1 arg2 arg3"
 
 import sys
 import getopt

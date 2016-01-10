@@ -1,5 +1,8 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
+# translate the current clipboard with translate-shell
+# parameters: <language> <Replace Clipboard [True,False]>
+# needs GTK3 GDK and translate-shell http://tuxdiary.com/2015/01/21/translate-shell/
 
 import gi, os, sys
 gi.require_version("Gtk", "3.0")
