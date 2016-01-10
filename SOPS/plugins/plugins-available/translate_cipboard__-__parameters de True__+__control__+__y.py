@@ -56,8 +56,7 @@ def displayClipboardTranslation(language, toClipboard):
 			Message = "Bitte translate-shell installieren" # install translate-shell
 		else:
 			#TranslationText = 	ClipboardText = raw_string(TranslationText)		
-			print(bool(toClipboard))
-			if toClipboard == 'True':
+			if toClipboard:
 				setTextToClipboard(TranslationText)
 				Message = "Neue Zwischenabglage " + TranslationText # Text in Clipboard
 			else:
@@ -68,4 +67,4 @@ def displayClipboardTranslation(language, toClipboard):
 	# Say/braille something.
 	print(Message)
 	
-displayClipboardTranslation(sys.argv[1],sys.argv[2])
+displayClipboardTranslation(sys.argv[1],sys.argv[2] == 'True')
