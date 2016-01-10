@@ -3,7 +3,6 @@
 
 import gi, os, sys
 gi.require_version("Gtk", "3.0")
-gi.require_version("Gdk", "3.0")
 from gi.repository import Gtk, Gdk
 
 escape_dict={'\a':r'\a',
@@ -27,7 +26,7 @@ escape_dict={'\a':r'\a',
         '\8':r'\8',
         '\9':r'\9',
         "'" : r" ",
-        '"' : r'"'}
+        '"' : r' '}
 
 def raw_string(text):
     """Returns a raw string representation of text"""
@@ -38,7 +37,6 @@ def raw_string(text):
     return new_string
 
 def setTextToClipboard(text):
-#    print(":"+text)
     ClipboardObj = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
     ClipboardObj.set_text(text, -1)
 
@@ -54,16 +52,16 @@ def displayClipboardTranslation(language, toClipboard):
         TranslationText = os.popen('translate-shell -b :'+ language +' "'+ ClipboardText +'"').read()
         TranslationText = TranslationText[:-1]
         if TranslationText in '/bin/sh: translate-shell: ':
-            Message = "Bitte translate-shell installieren" # install translate-shell
+            Message = "Please install translate-shell translate-shell" # install translate-shell
         else:
             TranslationText = ClipboardText = raw_string(TranslationText)		
             if toClipboard:
         	    setTextToClipboard(TranslationText)
-        	    Message = "Neue Zwischenabglage " + TranslationText # Text in Clipboard
+        	    Message = "New clipboard " + TranslationText # Neue Zwischenabglage
             else:
-                Message = "Übersetzt " + TranslationText # Text in Clipboard
+                Message = "Übersetzt " + TranslationText # Übersetzt
     else:
-        Message = "Zwischenablage ist leer" #Clipboard is empty
+        Message = "Clipboard is empty" #Zwischenablage ist leer
 
     # Say/braille something.
     print(Message)
