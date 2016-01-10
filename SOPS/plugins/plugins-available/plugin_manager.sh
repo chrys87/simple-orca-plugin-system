@@ -31,7 +31,7 @@ die()
 get_action()
 {
 local __actionVariable="$1"
-answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select an action:" --radiolist --column "" --column "" TRUE "Configure Plugins" FALSE "Install New Plugins")"
+answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select an action:" --column "Select an Action" "Configure Plugins" "Install New Plugins")"
 if [[ $__actionVariable ]]; then
 eval $__actionVariable="'${answer,,}'"
 else
@@ -61,7 +61,7 @@ else
 checkList="${checkList}FALSE"$'\n'"${pluginName}"$'\n'"Enabled"$'\n'
 fi
 done
-local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins:" --checklist --ok-label "Configure" --separator $'\n' --column "" --column "" --column "" $checkList)"
+local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins:" --checklist --ok-label "Toggle Selected Plugins" --separator $'\n' --column "" --column "Plugin" --column "Status" $checkList)"
 for i in $items ; do
 if ! ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
 ln -s "${pluginPath[$i]}" "${xdgPath}/plugins-enabled/"
@@ -90,7 +90,7 @@ checkList="${checkList}FALSE ${l##*/} "
 pluginList[${l##*/}]="${i%/*}/$l"
 done
 done
-local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Install plugins:" --checklist --ok-label "Install" --column "" --column "" $checkList | tr '|' $'\n')"
+local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Install plugins:" --checklist --ok-label "Install" --column "" --column "Plugin" $checkList | tr '|' $'\n')"
 if [ -z "$items" ]; then
 exit 0
 fi
@@ -100,7 +100,7 @@ checkList="FALSE alt FALSE control FALSE shift $checkList" #Modifier
 checkList="FALSE startnotify FALSE stopnotify FALSE showstderr FALSE parameters FALSE blockcall $checkList" #commands
 
 for i in $items ; do
-fileName="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select keyboard shortcut for $i:" --checklist --separator __+__ --column "" --column "" $checkList)"
+fileName="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select keyboard shortcut for $i:" --checklist --separator __+__ --column "" --column "Keys" $checkList)"
 if [ -z "$fileName" ]; then
 exit 0
 fi
