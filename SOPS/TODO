@@ -1,0 +1,5 @@
+- Pluginloader: posiblity to hook up on triggers. CHRYS
+- Pluginloader: check technical possiblitys to pass script and inputEvent to plugin
+- Pluginmanager: make parameters configurable
+- Pluginmanager: show shortcut configuration window on activate plugins
+- Pluginmanager: warning if plugin_manager will be deactivated
