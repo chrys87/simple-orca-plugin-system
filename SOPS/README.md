@@ -3,17 +3,17 @@ install manually
 sudo cp -r SOPS /usr/share/
 2. run as user:
 cd /usr/share/SOPS
-./install-for-current-user.sh # copy all the needed stuff to orca
+/usr/share/SOPS/install-for-current-user.sh # copy all the needed stuff to orca
 
 install via packagemanager
 1.1 Archlinux AUR - simpleorcapluginsystem-git
 2. run as user:
-cd /usr/share/SOPS
-./install-for-current-user.sh # copy all the needed stuff to orca
+/usr/share/SOPS/install-for-current-user.sh # copy all the needed stuff to orca
 
 administration
-use ensop and dissop to enable and disable plugins, see docu.txt section 2.
+use ensop and dissop to enable and disable plugins on the commandline.  You may also use the plugin manager included by default by pressing orca+p.
 by default not all plugins are activated
+For writing plugins and more usage details see docu.txt.
 
 remove
 remove package or
