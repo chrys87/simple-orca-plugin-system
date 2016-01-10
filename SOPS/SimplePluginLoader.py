@@ -63,30 +63,34 @@ def initSettings():
     'stopnotify':False,
     'blockcall':False,
     'showstderr':False,
+    'parameters':'',
     }
     return settings
 
 def parseFileName(filepath, settings):
     try:
         filename = os.path.basename(filepath) #filename
-        filename = os.path.splitext(filename)[0].lower() #remove extension if we have one
-        #remove pluginname seperated by -
-        filenamehelper = filename.split('-')
+        filename = os.path.splitext(filename)[0] #remove extension if we have one
+        #remove pluginname seperated by __-__
+        filenamehelper = filename.split('__-__')
         filename = filenamehelper[len(filenamehelper) - 1 ]
         settings['file'] = filepath
         settings['pluginname'] = 'NoNameAvailable'
         if len(filenamehelper) == 2:
             settings['pluginname'] = filenamehelper[0]
-        #now get shortcuts seperated by +
-        filenamehelper = filename.split('+')
-        settings['key'] = filenamehelper[len(filenamehelper) - 1]
-        settings['shiftkey'] = 'shift' in filenamehelper
-        settings['ctrlkey'] = 'control' in filenamehelper
-        settings['altkey'] = 'alt' in filenamehelper
-        settings['startnotify'] = 'startnotify' in filenamehelper
-        settings['stopnotify'] = 'stopnotify' in filenamehelper
-        settings['blockcall'] = 'blockcall' in filenamehelper
-        settings['showstderr'] = 'showstderr' in filenamehelper
+        #now get shortcuts seperated by __+__
+        filenamehelper = filename.split('__+__')
+        if len([y for y in map(str.lower, filenamehelper) if 'parameters' in y]) == 1:
+            settings['parameters'] = [y for y in map(str.lower, filenamehelper) if 'parameters' in y][0] ## TODO
+            settings['parameters'] = settings['parameters'][10:]
+        settings['key'] = filenamehelper[len(filenamehelper) - 1].lower()
+        settings['shiftkey'] = 'shift' in map(str.lower, filenamehelper)
+        settings['ctrlkey'] = 'control' in map(str.lower, filenamehelper)
+        settings['altkey'] = 'alt' in map(str.lower, filenamehelper)
+        settings['startnotify'] = 'startnotify' in map(str.lower, filenamehelper)
+        settings['stopnotify'] = 'stopnotify' in map(str.lower, filenamehelper)
+        settings['blockcall'] = 'blockcall' in map(str.lower, filenamehelper)
+        settings['showstderr'] = 'showstderr' in map(str.lower, filenamehelper)
         if len(settings['key']) != 1: #for now no special keys, but more valid data
         # for the return I realy should use a dict
             settings = initSettings()
@@ -99,7 +103,7 @@ def parseFileName(filepath, settings):
         return settings
 
 def buildpluginFunctions(settings):
-    currplugin = "\'\"" + settings['file'] + "\"\'"
+    currplugin = "\'\"" + settings['file'] + "\" " + settings['parameters'] + "\'"
     fun_body = "def " + settings['functionname'] + "(script, inputEvent=None):\n"
     pluginname = settings['pluginname']
     if settings['blockcall']:
