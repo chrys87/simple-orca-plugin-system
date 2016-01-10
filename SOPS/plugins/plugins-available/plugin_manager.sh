@@ -53,7 +53,7 @@ declare -A local pluginPath
 local checkList=""
 local i=""
 for i in $pluginList ; do
-pluginName="$((basename "$i") | cut -d '__-__' -f1 | sed 's/startnotify\|blockcall\|stopnotify//')"
+pluginName="$((basename "${i%__-__*}") | sed 's/startnotify\|blockcall\|stopnotify//')"
 pluginPath[$pluginName]="$i"
 if ! ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$pluginName]##*/}" &> /dev/null ; then
 checkList="${checkList}FALSE"$'\n'"${pluginName}"$'\n'"Disabled"$'\n'
@@ -61,7 +61,7 @@ else
 checkList="${checkList}FALSE"$'\n'"${pluginName}"$'\n'"Enabled"$'\n'
 fi
 done
-local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins:" --checklist --ok-label "Configure" --column "" --column "" --column "" $checkList | tr '|' $'\n')"
+local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Configure plugins:" --checklist --ok-label "Configure" --separator $'\n' --column "" --column "" --column "" $checkList)"
 for i in $items ; do
 if ! ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
 ln -s "${pluginPath[$i]}" "${xdgPath}/plugins-enabled/"
