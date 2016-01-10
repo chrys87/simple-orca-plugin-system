@@ -95,8 +95,10 @@ if [ -z "$items" ]; then
 exit 0
 fi
 local keyList=""
-checkList="$(echo {a..z} {0..9} | sed 's/\([a-z]\)/FALSE \1/g')"
-checkList="FALSE alt FALSE control FALSE shift $checkList"
+checkList="$(echo {a..z} {0..9} | sed 's/\([a-z]\)/FALSE \1/g')" #Keys
+checkList="FALSE alt FALSE control FALSE shift $checkList" #Modifier
+checkList="FALSE startnotify FALSE stopnotify FALSE showstderr FALSE parameters FALSE blockcall $checkList" #commands
+
 for i in $items ; do
 fileName="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select keyboard shortcut for $i:" --checklist --separator __+__ --column "" --column "" $checkList)"
 if [ -z "$fileName" ]; then
