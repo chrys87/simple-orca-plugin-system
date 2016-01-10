@@ -102,7 +102,7 @@ fileName="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select ke
 if [ -z "$fileName" ]; then
 exit 0
 fi
-fileName="${i%.*}-${fileName}.${i##*.}"
+fileName="${i%.*}__-__${fileName}.${i##*.}"
 echo "Installing ${i##*/}"
 wget -O "${xdgPath}/plugins-available/$fileName" "${pluginList[$i]}" || die "Could not install plugin $i"
 chmod +x "${xdgPath}/plugins-available/$fileName" || die "Could not set execute permissions for plugin $i"
