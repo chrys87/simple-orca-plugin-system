@@ -9,9 +9,10 @@ if [ -e "$HOME/.local/share/orca/orca-customizations.py" ]; then
 fi
 
 #create structure in home
-mkdir -p "$HOME/.config/SOPS/plugins-available"
-mkdir -p "$HOME/.config/SOPS/plugins-enabled"
-ln -s "/usr/share/SOPS/SimplePluginLoader.py" $HOME/.config/SOPS/
+xdgPath="${XDG_CONFIG_HOME:-$HOME/.config}"
+mkdir -p "$xdgPath/SOPS/plugins-available"
+mkdir -p "$xdgPath/SOPS/plugins-enabled"
+ln -s "/usr/share/SOPS/SimplePluginLoader.py" $xdgPath/SOPS/
 
 # include it in orca
 echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
@@ -24,7 +25,7 @@ echo "# End SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$HOME/.local/share/orca/or
 echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
 
 #enable some scripts by default
-cd "./plugins/plugins-available/"
+cd "/usr/share/SOPS/plugins/plugins-available/"
 ../../tools/ensop workspacenumber.sh
 ../../tools/ensop clipboard.py
 ../../tools/ensop plugin_manager.sh
