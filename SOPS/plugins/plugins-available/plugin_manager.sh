@@ -83,12 +83,12 @@ local i=""
 local checkList
 declare -A local pluginList=""
 local plugins
-for i in $pluginSites ; do
+for i in ${pluginSites[@]} ; do
 plugins=($(echo -n "${i%/*}/";curl -s "$i" | grep -A 10000 '<!-- begin plugin list -->' | grep -B 10000 '<!-- end plugin list -->' | grep -v '<!--'))
+for l in ${plugins[@]} ; do
+checkList="${checkList}FALSE ${l##*/} "
+pluginList[${l##*/}]="${i%/*}/$l"
 done
-for i in ${plugins[@]} ; do
-checkList="${checkList}FALSE ${i##*/} "
-pluginList[${i##*/}]="$i"
 done
 local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Install plugins:" --checklist --ok-label "Install" --column "" --column "" $checkList | tr '|' $'\n')"
 if [ -z "$items" ]; then
