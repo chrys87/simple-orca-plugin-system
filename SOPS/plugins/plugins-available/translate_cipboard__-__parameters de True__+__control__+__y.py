@@ -38,7 +38,7 @@ def raw_string(text):
     return new_string
 
 def setTextToClipboard(text):
-    print(":"+text)
+#    print(":"+text)
     ClipboardObj = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
     ClipboardObj.set_text(text, -1)
 

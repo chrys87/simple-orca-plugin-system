@@ -104,7 +104,6 @@ def parseFileName(filepath, settings):
 
 def buildpluginFunctions(settings):
     currplugin = "\'\"" + settings['file'] + "\" " + settings['parameters'] + "\'"
-    print(currplugin)
     fun_body = "def " + settings['functionname'] + "(script, inputEvent=None):\n"
     pluginname = settings['pluginname']
     if settings['blockcall']:
