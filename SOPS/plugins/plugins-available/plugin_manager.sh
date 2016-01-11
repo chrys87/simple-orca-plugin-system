@@ -31,7 +31,7 @@ die()
 get_action()
 {
 local __actionVariable="$1"
-answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select an action:" --column "Select an Action" "Configure Plugins" "Install New Plugins")"
+answer="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select an action:" --column "Select an Action" "Configure Plugins" "Install New Plugins" "Close Simple Orca Plugin Manager")"
 if [[ $__actionVariable ]]; then
 eval $__actionVariable="'${answer,,}'"
 else
@@ -84,10 +84,10 @@ local checkList
 declare -A local pluginList=""
 local plugins
 for i in ${pluginSites[@]} ; do
-plugins=($(echo -n "${i%/*}/";curl -s "$i" | grep -A 10000 '<!-- begin plugin list -->' | grep -B 10000 '<!-- end plugin list -->' | grep -v '<!--'))
+plugins=($(curl -s "$i" | grep -A 10000 '<!-- begin plugin list -->' | grep -B 10000 '<!-- end plugin list -->' | grep -v '<!--'))
 for l in ${plugins[@]} ; do
 checkList="${checkList}FALSE ${l##*/} "
-pluginList[${l##*/}]="${i%/*}/$l"
+pluginList[$l]="${i%/*}/$l"
 done
 done
 local items="$(zenity --list --title "Simple Orca Plugin Manager" --text "Install plugins:" --checklist --ok-label "Install" --column "" --column "Plugin" $checkList | tr '|' $'\n')"
@@ -106,7 +106,7 @@ exit 0
 fi
 fileName="${i%.*}__-__${fileName}.${i##*.}"
 echo "Installing ${i##*/}"
-wget -O "${xdgPath}/plugins-available/$fileName" "${pluginList[$i]}" || die "Could not install plugin $i"
+wget -O "${xdgPath}/plugins-available/$fileName" "${pluginList[$i]}" || die "Could not download plugin $i from ${pluginList[$i]}"
 chmod +x "${xdgPath}/plugins-available/$fileName" || die "Could not set execute permissions for plugin $i"
 ln -s "${xdgPath}/plugins-available/$fileName" "${xdgPath}/plugins-enabled/$fileName" || die "Could not link plugin $i"
 echo "Plugin $i installed successfully."
@@ -117,9 +117,16 @@ orca -r &
 fi
 }
 
+close_simple_orca_plugin_manager()
+{
+exit 0
+}
+
 get_xdg_path
+while : ; do
 get_action action
 if [ -n "$action" ]; then
 ${action// /_}
 fi
+done
 exit 0
