@@ -4,6 +4,7 @@ I seems that if you can do this:
 this is also possible
 - Pluginloader: posiblity to hook up on triggers. CHRYS
 somehow we need do pass a script object via shell to an subprocess. Please contact me for ideas.
+https://docs.python.org/3/library/pickle.html
 
 - Pluginmanager: make parameters configurable
 - Pluginmanager: show shortcut configuration window on activate plugins
