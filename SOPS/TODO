@@ -1,5 +1,10 @@
+
+I seems that if you can do this:
+- Pluginloader: check technical possiblitys to pass script and inputEvent to plugin. CHRYS
+this is also possible
 - Pluginloader: posiblity to hook up on triggers. CHRYS
-- Pluginloader: check technical possiblitys to pass script and inputEvent to plugin
+somehow we need do pass a script object via shell to an subprocess. Please contact me for ideas.
+
 - Pluginmanager: make parameters configurable
 - Pluginmanager: show shortcut configuration window on activate plugins
 - Pluginmanager: warning if plugin_manager will be deactivated
