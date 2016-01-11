@@ -13,7 +13,8 @@ get_xdg_path()
 xdgPath="${XDG_CONFIG_HOME:-$HOME/.config}"
 xdgPath="${xdgPath}/SOPS"
 if ! [ -d "$xdgPath" ]; then
-mkdir -p "${xdgPath}/plugins-{available,enabled}"
+mkdir -p "${xdgPath}/plugins-available"
+mkdir -p "${xdgPath}/plugins-enabled"
 fi
 }
 
