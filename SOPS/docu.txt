@@ -65,3 +65,7 @@ The tools are located in the "tools" folder
 ./dissop <pluginname> #disable the plugin, its not loaded anymore.
 They basicaly just create links in ~./.config/SOPSP/plugins-enabled and make the plugins executable.
 To reload the plugins in orca, you have to restart orca
+
+3. Hosting
+I you want to Host plugins see:
+SOPS/tools/hosting.txt
