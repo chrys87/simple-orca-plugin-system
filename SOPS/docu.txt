@@ -1,10 +1,14 @@
 1. How to write a plugin:
 
 1.1 File name:
-structure:
+structure
+<description>__-__[<command>__+__command...][__+__<modifier>__+<modiier>__]<key char>.sh
+structure examples:
 description__-__<command>__+__control__+__alt__+__<key char>.sh
-The description is optional, its used for key assign announcement.
-It don't have to be a shell script. python, Perl and anything that produce an STD out also works here.
+description__-__<command>__+__<command>__+__shift__+__<key char>.py
+description__-__<key char>.py
+
+The file could be any type of script or application. It just have to send to STD out.
 
 1.2 Modifiers / Keys /Commands
 1.2.1 Modifiers
@@ -49,8 +53,8 @@ this contains the default plugins and the administration tools.
 contains the enabled (active) plugin. this folder will be read by orca.
 
 2.2 Administration tools
-The tools are located in the plugins-available folder 
+The tools are located in the "tools" folder 
 ./ensop <pluginname> #enables an plugin so its active
 ./dissop <pluginname> #disable the plugin, its not loaded anymore.
-They just create links in plugins-enabled and make the plugins executable.
+They basicaly just create links in ~./.config/SOPSP/plugins-enabled and make the plugins executable.
 To reload the plugins in orca, you have to restart orca
