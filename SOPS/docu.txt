@@ -1,8 +1,10 @@
 1. How to write a plugin:
 
 1.1 File name:
+the description have to be seperated to the oter parts wtih __-__
+the commands, modifier and the key has to be seperated by __+__
 structure
-<description>__-__[<command>__+__command...][__+__<modifier>__+<modiier>__]<key char>.sh
+<description>__-__[<command>__+__command...][__+__<modifier>__+__<modiier>__+__]<key char>.sh
 structure examples:
 description__-__<command>__+__control__+__alt__+__<key char>.sh
 description__-__<command>__+__<command>__+__shift__+__<key char>.py
@@ -42,6 +44,11 @@ parameters <parameter1> [parameter2] [parameter3]... = passes the parameters to 
 Just normal shell, Perl, python  scripts. orca will read the STD out (examples included)
 be sure that the execution permission is set with
 chmod +x <youplugin>
+basic plugin example for hello world while pressing ORCA+y:
+<example Hello_world__-__y.sh >
+#!/bin/sh
+echo "Hello World"
+</example Hello_world__-__y.sh >
 
 2 Administration
 2.1 Folders
