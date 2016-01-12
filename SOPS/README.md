@@ -10,7 +10,7 @@ install via packagemanager
 /usr/share/SOPS/install-for-current-user.sh # copy all the needed stuff to orca
 
 administration
-use ensop and dissop to enable and disable plugins on the commandline.  You may also use the plugin manager included by default by pressing orca+p.
+use ensop and dissop to enable and disable plugins on the commandline.  You may also use the plugin manager included by default by pressing orca+CTRL+p.
 by default not all plugins are activated
 For writing plugins and more usage details see docu.txt.
 
