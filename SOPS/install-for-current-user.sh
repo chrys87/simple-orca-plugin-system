@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# Make sure this isn't ran as root:
+if [ "$(whoami)" = "root" ]; then
+echo "This script does not need root privileges."
+exit 1
+fi
+
 # is it already installed? so break
 if [ -e "$HOME/.local/share/orca/orca-customizations.py" ]; then
     if grep -q "spec.loader.exec_module(SimplePluginLoaderModule)" "$HOME/.local/share/orca/orca-customizations.py"; then
