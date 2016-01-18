@@ -1,4 +1,7 @@
 
+- Pluginloader: "exec" parameter for executing a function once at start. (this makes stuff like "overwrite settings" and other 
+things that need just run once at orca start possible. you should be able to bind those functions to keys like the existing stuff but
+it should not necessary.
 I seems that if you can do this:
 - Pluginloader: check technical possiblitys to pass script and inputEvent to plugin. CHRYS
 this is also possible
