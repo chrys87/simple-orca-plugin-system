@@ -72,11 +72,11 @@ def initSettings():
     }
     return settings
 
-def parseFileName(filepath, settings):
+def getPluginSettings(filepath, settings):
     try:
         fileName, fileExtension = os.path.splitext(filepath)
-        if (fileExtension): #if there is an extension
-            settings['fileext'] = fileExtension #get extension
+        if (fileExtension and (fileExtension != '')): #if there is an extension
+            settings['fileext'] = fileExtension.lower() #get extension
             settings['loadable'] = settings['fileext'] == '.py' # only python is loadable
         filename = os.path.basename(filepath) #filename
         filename = os.path.splitext(filename)[0] #remove extension if we have one
@@ -84,13 +84,14 @@ def parseFileName(filepath, settings):
         filenamehelper = filename.split('__-__')
         filename = filenamehelper[len(filenamehelper) - 1 ]
         settings['file'] = filepath
+        settings['permission'] = os.access(filepath, os.X_OK )
         settings['pluginname'] = 'NoNameAvailable'
         if len(filenamehelper) == 2:
             settings['pluginname'] = filenamehelper[0]
         #now get shortcuts seperated by __+__
         filenamehelper = filename.split('__+__')
         if len([y for y in filenamehelper if 'parameters' in y.lower()]) == 1:
-            settings['parameters'] = [y for y in filenamehelper if 'parameters' in y.lower()][0] ## TODO
+            settings['parameters'] = [y for y in filenamehelper if 'parameters' in y.lower()][0]
             settings['parameters'] = settings['parameters'][10:]
         settings['key'] = filenamehelper[len(filenamehelper) - 1].lower()
         settings['shiftkey'] = 'shift' in map(str.lower, filenamehelper)
@@ -102,13 +103,17 @@ def parseFileName(filepath, settings):
         settings['showstderr'] = 'showstderr' in map(str.lower, filenamehelper)
         settings['exec'] = 'exec' in map(str.lower, filenamehelper)    
         settings['loadmodule'] = 'loadmodule' in map(str.lower, filenamehelper) 
-        settings['loadmodule'] = settings['loadmodule'] and settings['loadable']
-        settings['valid'] = True # we could load everything
+        if not settings['loadmodule']: # not loaded 
+            if not settings['permission']: #but no execution permission wont work
+                return initSettings()
+        if settings['loadmodule'] and not settings['loadable']: #sorry.. its not loadable
+            return initSettings()
         if (len(settings['key']) > 1): #no shortcut
             if not settings['exec']: # and no exec -> the plugin make no sense because it isnt hooked anywhere
                 return initSettings() #so not load it (sets valid = False)
             else:
                 settings['key'] = '' #there is a strange key, but exec? ignore the key..
+        settings['valid'] = True # we could load everything
         return settings
     except:
         return initSettings()
@@ -167,15 +172,18 @@ if not loaded:
     pluginlist = glob.glob(pluginrepo+'*')
     for currplugin in pluginlist:
         settings = initSettings()
-        settings = parseFileName(currplugin, settings)
+        settings = getPluginSettings(currplugin, settings)
 
         if not settings['valid']:
             continue
+            
         settings = getFunctionName(settings)
+        
         if settings['loadmodule']:
             exec(buildPluginExec(settings)) # load as python module
         else:
             exec(buildPluginSubprocess(settings)) # run as subprocess
+            
         if settings['blockcall']:
             fun = globals()[settings['functionname']]
         else:
