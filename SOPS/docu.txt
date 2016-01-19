@@ -27,7 +27,7 @@ shift (description__-__shift+w.sh)
 control + alt (description__-__control+alt+w.sh)
 
 1.2.2 Key
-<Key char> is a single character. It is not optional.
+<Key char> is a single character. You have to set a <Key char> or use the exec command for running once at start.
 d.sh uses orca + d as shortcut. The <char> has to be always the last character in 
 The file name before the extension starts.
 
@@ -39,16 +39,29 @@ stopnotify = announce "finish <description>". This is useful as feedback for plu
 blockcall = don't start plugin in a thread, be careful, this locks orca until the plugin is finish
 showstderr = not only show stdout but also stderr
 parameters <parameter1> [parameter2] [parameter3]... = passes the parameters to the plugin
+exec = run the plugin once while loading it.
+loadmodule = does not just create a subprocess but load it via python. 
+You have all the power for real orca scripting). 
+this just works with python, but you are able to work in orca context similar the orca-customizations.py.
+see here for orca scripting:
+https://wiki.gnome.org/Projects/Orca/FrequentlyAskedQuestions/CustomizingOrca
 
 1.3 File content:
-Just normal shell, Perl, python  scripts. orca will read the STD out (examples included)
 be sure that the execution permission is set with
 chmod +x <youplugin>
+1.3.1 simple-plugin (subprocess):
+Just normal shell, Perl, python  scripts. orca will read the STD out (examples included)
 basic plugin example for hello world while pressing ORCA+y:
 <example Hello_world__-__y.sh >
 #!/bin/sh
 echo "Hello World"
 </example Hello_world__-__y.sh >
+1.3.2 advanced-plugin (spec.loader.exec_module):
+replace the ! with the word bang while loading first.
+<example replace_chnames__-__loadmodule__+__exec.py >
+#!/bin/python
+orca.chnames.chnames["!"] = "bang"
+</example replace_chnames__-__loadmodule__+__exec.py >
 
 2 Administration
 2.1 Folders

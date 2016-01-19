@@ -4,6 +4,7 @@
 
 import glob
 import os
+import importlib.util
 import subprocess
 import random
 import string
@@ -54,6 +55,7 @@ def initSettings():
     settings={
     'filepath':'',
     'pluginname':'',
+    'fileext':'',
     'functionname':'',
     'key':'',
     'shiftkey':False,
@@ -63,12 +65,19 @@ def initSettings():
     'stopnotify':False,
     'blockcall':False,
     'showstderr':False,
+    'exec': False,
+    'executeable':False,
     'parameters':'',
     }
     return settings
 
 def parseFileName(filepath, settings):
     try:
+        fileName, fileExtension = os.path.splitext(filepath)
+        if (fileExtension): #if there is an extension
+            settings['fileext'] = fileExtension #get extension
+            if settings['fileext'] == '.py':
+                settings['executeable'] = True
         filename = os.path.basename(filepath) #filename
         filename = os.path.splitext(filename)[0] #remove extension if we have one
         #remove pluginname seperated by __-__
@@ -91,10 +100,15 @@ def parseFileName(filepath, settings):
         settings['stopnotify'] = 'stopnotify' in map(str.lower, filenamehelper)
         settings['blockcall'] = 'blockcall' in map(str.lower, filenamehelper)
         settings['showstderr'] = 'showstderr' in map(str.lower, filenamehelper)
-        if len(settings['key']) != 1: #for now no special keys, but more valid data
-        # for the return I realy should use a dict
-            settings = initSettings()
-            settings['key'] = 'ERROR'
+        settings['exec'] = 'exec' in map(str.lower, filenamehelper)    
+        settings['loadmodule'] = 'loadmodule' in map(str.lower, filenamehelper) 
+        settings['loadmodule'] = settings['loadmodule'] and settings['executeable']
+        if (len(settings['key']) > 1): #for now no special keys, but more valid data
+            if not settings['exec']:
+                settings = initSettings()
+                settings['key'] = 'ERROR'
+            else:
+                settings['key'] = ''
             return settings
         return settings
     except:
@@ -102,12 +116,12 @@ def parseFileName(filepath, settings):
         settings['key'] = 'ERROR'
         return settings
 
-def buildpluginFunctions(settings):
+def buildPluginSubprocess(settings):
     currplugin = "\'\"" + settings['file'] + "\" " + settings['parameters'] + "\'"
-    fun_body = "def " + settings['functionname'] + "(script, inputEvent=None):\n"
     pluginname = settings['pluginname']
     if settings['blockcall']:
        pluginname = "blocking " + pluginname
+    fun_body = "def " + settings['functionname'] + "(script, inputEvent=None):\n"
     if settings['startnotify']:
         fun_body +="  outputMessage('start " + pluginname + "')\n"    
     fun_body +="  p = Popen(" + currplugin + ", stdout=PIPE, stderr=PIPE, shell=True)\n"
@@ -125,20 +139,53 @@ def buildpluginFunctions(settings):
     fun_body +="  _thread.start_new_thread("+ settings['functionname'] + ",(script, inputEvent))\n\n"
     return fun_body
 
+def buildPluginExec(settings):
+    pluginname = settings['pluginname']
+    if settings['blockcall']:
+       pluginname = "blocking " + pluginname
+    fun_body = "def " + settings['functionname'] + "(script=None, inputEvent=None):\n"
+    if settings['startnotify']:
+        fun_body +="  outputMessage('start " + pluginname + "')\n"
+    fun_body += "  try:\n"  
+    fun_body += "    spec = importlib.util.spec_from_file_location(\"" + settings['functionname'] + "\",\""+ settings['file']+"\")\n"
+    fun_body += "    "+settings['functionname'] + "Module = importlib.util.module_from_spec(spec)\n"
+    fun_body += "    spec.loader.exec_module(" + settings['functionname'] + "Module)\n"
+    fun_body += "  except:\n"
+    fun_body += "    pass\n"
+    fun_body += "    outputMessage(\"Error while executing " + pluginname + "\")\n"
+    if settings['stopnotify']:
+        fun_body +="  outputMessage('finish " + pluginname + "')\n"
+    fun_body += "  return True\n\n"
+    fun_body +="def " + settings['functionname'] + "T(script=None, inputEvent=None):\n"
+    fun_body +="  _thread.start_new_thread("+ settings['functionname'] + ",(script, inputEvent))\n\n"
+    return fun_body
+
+def getFunctionName(settings):
+    settings['functionname'] = ''
+    while settings['functionname'] == '' or settings['functionname'] + 'T' in globals() or settings['functionname'] in globals():
+        settings['functionname'] = id_generator()
+    return settings
+
 if not loaded:
     pluginlist = glob.glob(pluginrepo+'*')
     for currplugin in pluginlist:
         settings = initSettings()
         settings = parseFileName(currplugin, settings)
-        if not settings['key'] in ['','ERROR']:
-            settings['functionname'] = ''
-            while settings['functionname'] == '' or settings['functionname'] + 'T' in globals() or settings['functionname'] in globals():
-                settings['functionname'] = id_generator()
-            exec(buildpluginFunctions(settings))
+
+        if not settings['key'] == 'ERROR':
+            settings = getFunctionName(settings)
+            if settings['loadmodule']:
+                exec(buildPluginExec(settings))
+            else:
+                exec(buildPluginSubprocess(settings))
             if settings['blockcall']:
                 fun = globals()[settings['functionname']]
             else:
                 fun = globals()[settings['functionname']+"T"]
-            SetupShortcutAndHandle(fun, settings)
+            if settings['exec']:
+                fun(None)
+
+            if not settings['key'] == '':
+                SetupShortcutAndHandle(fun, settings)
     loaded = True
 
