@@ -45,7 +45,7 @@ def SetupShortcutAndHandle(fun, settings):
     # orca + shift
     if settings['shiftkey'] and not settings['ctrlkey'] and not settings['altkey']:
         myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.defaultModifierMask, orca.keybindings.ORCA_SHIFT_MODIFIER_MASK, inputEventHandlers[len(inputEventHandlers) - 1]))
-    functions.append(fun)
+
     orca.settings.keyBindingsMap["default"] = myKeyBindings
 
 def id_generator(size=7, chars=string.ascii_letters):
@@ -68,6 +68,7 @@ def initSettings():
     'exec': False,
     'executeable':False,
     'parameters':'',
+    'valid':False
     }
     return settings
 
@@ -76,8 +77,7 @@ def parseFileName(filepath, settings):
         fileName, fileExtension = os.path.splitext(filepath)
         if (fileExtension): #if there is an extension
             settings['fileext'] = fileExtension #get extension
-            if settings['fileext'] == '.py':
-                settings['executeable'] = True
+            settings['loadable'] = settings['fileext'] == '.py' # only python is loadable
         filename = os.path.basename(filepath) #filename
         filename = os.path.splitext(filename)[0] #remove extension if we have one
         #remove pluginname seperated by __-__
@@ -102,19 +102,16 @@ def parseFileName(filepath, settings):
         settings['showstderr'] = 'showstderr' in map(str.lower, filenamehelper)
         settings['exec'] = 'exec' in map(str.lower, filenamehelper)    
         settings['loadmodule'] = 'loadmodule' in map(str.lower, filenamehelper) 
-        settings['loadmodule'] = settings['loadmodule'] and settings['executeable']
-        if (len(settings['key']) > 1): #for now no special keys, but more valid data
-            if not settings['exec']:
-                settings = initSettings()
-                settings['key'] = 'ERROR'
+        settings['loadmodule'] = settings['loadmodule'] and settings['loadable']
+        settings['valid'] = True # we could load everything
+        if (len(settings['key']) > 1): #no shortcut
+            if not settings['exec']: # and no exec -> the plugin make no sense because it isnt hooked anywhere
+                return initSettings() #so not load it (sets valid = False)
             else:
-                settings['key'] = ''
-            return settings
+                settings['key'] = '' #there is a strange key, but exec? ignore the key..
         return settings
     except:
-        settings = initSettings()
-        settings['key'] = 'ERROR'
-        return settings
+        return initSettings()
 
 def buildPluginSubprocess(settings):
     currplugin = "\'\"" + settings['file'] + "\" " + settings['parameters'] + "\'"
@@ -172,20 +169,23 @@ if not loaded:
         settings = initSettings()
         settings = parseFileName(currplugin, settings)
 
-        if not settings['key'] == 'ERROR':
-            settings = getFunctionName(settings)
-            if settings['loadmodule']:
-                exec(buildPluginExec(settings))
-            else:
-                exec(buildPluginSubprocess(settings))
-            if settings['blockcall']:
-                fun = globals()[settings['functionname']]
-            else:
-                fun = globals()[settings['functionname']+"T"]
-            if settings['exec']:
-                fun(None)
+        if not settings['valid']:
+            continue
+        settings = getFunctionName(settings)
+        if settings['loadmodule']:
+            exec(buildPluginExec(settings)) # load as python module
+        else:
+            exec(buildPluginSubprocess(settings)) # run as subprocess
+        if settings['blockcall']:
+            fun = globals()[settings['functionname']]
+        else:
+            fun = globals()[settings['functionname']+"T"] # T = Threaded
+        functions.append(fun)  
+          
+        if settings['exec']: # exec on load if we want
+            fun(None)
 
-            if not settings['key'] == '':
-                SetupShortcutAndHandle(fun, settings)
+        if not settings['key'] == '':
+            SetupShortcutAndHandle(fun, settings)
     loaded = True
 
