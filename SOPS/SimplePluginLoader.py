@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # chrys
-# version 0.1
+# version 0.5
 
 import glob
 import os
