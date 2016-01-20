@@ -17,7 +17,7 @@ import orca.orca
 pluginrepo = os.path.expanduser('~')+"/.config/SOPS/plugins-enabled/"
 
 #globals
-functions = []
+pluginList = []
 inputEventHandlers = []
 loaded = False
 myKeyBindings = orca.keybindings.KeyBindings()
@@ -28,8 +28,8 @@ def outputMessage(Message):
     if (orca.settings.enableBraille):
         orca.braille.displayMessage(Message)
 
-def SetupShortcutAndHandle(fun, settings):
-    inputEventHandlers.append(orca.input_event.InputEventHandler(fun, settings['pluginname'], settings))
+def SetupShortcutAndHandle( settings):
+    inputEventHandlers.append(orca.input_event.InputEventHandler(settings['function'], settings['pluginname'], settings))
     # just the orca modifier
     if not settings['shiftkey'] and not settings['ctrlkey'] and not settings['altkey']:
         myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.defaultModifierMask, orca.keybindings.ORCA_MODIFIER_MASK, inputEventHandlers[len(inputEventHandlers) - 1]))
@@ -68,6 +68,7 @@ def initSettings():
     'exec': False,
     'executeable':False,
     'parameters':'',
+    'function':None,
     'valid':False
     }
     return settings
@@ -103,10 +104,10 @@ def getPluginSettings(filepath, settings):
         settings['showstderr'] = 'showstderr' in map(str.lower, filenamehelper)
         settings['exec'] = 'exec' in map(str.lower, filenamehelper)    
         settings['loadmodule'] = 'loadmodule' in map(str.lower, filenamehelper) 
-        if not settings['loadmodule']: # not loaded 
-            if not settings['permission']: #but no execution permission wont work
+        if not settings['loadmodule']:
+            if not settings['permission']: #subprocessing only works with exec permission
                 return initSettings()
-        if settings['loadmodule'] and not settings['loadable']: #sorry.. its not loadable
+        if settings['loadmodule'] and not settings['loadable']: #sorry.. its not loadable only .py is loadable
             return initSettings()
         if (len(settings['key']) > 1): #no shortcut
             if not settings['exec']: # and no exec -> the plugin make no sense because it isnt hooked anywhere
@@ -123,7 +124,7 @@ def buildPluginSubprocess(settings):
     pluginname = settings['pluginname']
     if settings['blockcall']:
        pluginname = "blocking " + pluginname
-    fun_body = "def " + settings['functionname'] + "(script, inputEvent=None):\n"
+    fun_body = "def " + settings['functionname'] + "(script=None, inputEvent=None):\n"
     if settings['startnotify']:
         fun_body +="  outputMessage('start " + pluginname + "')\n"    
     fun_body +="  p = Popen(" + currplugin + ", stdout=PIPE, stderr=PIPE, shell=True)\n"
@@ -137,7 +138,7 @@ def buildPluginSubprocess(settings):
     if settings['stopnotify']:
         fun_body +="  outputMessage('finish " + pluginname + "')\n"
     fun_body +="  return True\n\n"
-    fun_body +="def " + settings['functionname'] + "T(script, inputEvent=None):\n"
+    fun_body +="def " + settings['functionname'] + "T(script=None, inputEvent=None):\n"
     fun_body +="  _thread.start_new_thread("+ settings['functionname'] + ",(script, inputEvent))\n\n"
     return fun_body
 
@@ -185,15 +186,16 @@ if not loaded:
             exec(buildPluginSubprocess(settings)) # run as subprocess
             
         if settings['blockcall']:
-            fun = globals()[settings['functionname']]
+            settings['function'] = globals()[settings['functionname']] # non threaded
         else:
-            fun = globals()[settings['functionname']+"T"] # T = Threaded
-        functions.append(fun)  
+            settings['function'] = globals()[settings['functionname']+"T"] # T = Threaded
+ 
           
         if settings['exec']: # exec on load if we want
-            fun(None)
+            settings['function']()
 
         if not settings['key'] == '':
-            SetupShortcutAndHandle(fun, settings)
+            SetupShortcutAndHandle(settings)
+        pluginList.append(settings) # store in a list
     loaded = True
 
