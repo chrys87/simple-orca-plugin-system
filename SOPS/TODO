@@ -1,4 +1,3 @@
-
 - Pluginloader: pass script, intputEvent to subprocess?
 https://docs.python.org/3/library/pickle.html
 http://www.bogotobogo.com/python/python_serialization_pickle_json.php
