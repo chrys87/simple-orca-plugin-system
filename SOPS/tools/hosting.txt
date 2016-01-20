@@ -4,7 +4,7 @@ To add your site to the plugin manager, contact Storm dragon or Chrys
 The only other files that should be in the directory with index.php are the plugins you want to host.
 When hosting plugins, do not assign keys to them, this will be done at runtime.
 Correct, plugin.sh
-Incorrect: plugin-alt+shift+whatever.sh
+Incorrect: plugin__-__alt__+__shift__+__whatever.sh
 This is released under the terms of the WTFPL http://wtfpl.net */
 
 // Enter the information you want to share publically in the provided variables
@@ -27,7 +27,7 @@ $hosting = false;
 <body>
 <h2>Orca Plugins</h2>
 <p>
-The list of plugins are not links. To install the listed plugins run the plugin manager in Orca, orca+control+shift+P by default.
+The list of plugins are not links. To install the listed plugins run the plugin manager in Orca, orca+control+p by default.
 </p>
 <?php
 if ("$hosting" == true)
