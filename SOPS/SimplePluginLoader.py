@@ -29,7 +29,7 @@ def outputMessage(Message):
         orca.braille.displayMessage(Message)
 
 def SetupShortcutAndHandle( settings):
-    inputEventHandlers.append(orca.input_event.InputEventHandler(settings['function'], settings['pluginname'], settings))
+    inputEventHandlers.append(orca.input_event.InputEventHandler(settings['function'], settings['pluginname']))
     # just the orca modifier
     if not settings['shiftkey'] and not settings['ctrlkey'] and not settings['altkey']:
         myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.defaultModifierMask, orca.keybindings.ORCA_MODIFIER_MASK, inputEventHandlers[len(inputEventHandlers) - 1]))
