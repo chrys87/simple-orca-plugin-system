@@ -2,7 +2,6 @@
 https://docs.python.org/3/library/pickle.html
 http://www.bogotobogo.com/python/python_serialization_pickle_json.php
 
-- Pluginmanager: installation of plugin fails if ~/.config/SOPS/plugins-available doesnt exist
 - Pluginmanager: make parameters configurable
 - Pluginmanager: show shortcut configuration window on activate plugins
 - Pluginmanager: warning if plugin_manager will be deactivated
