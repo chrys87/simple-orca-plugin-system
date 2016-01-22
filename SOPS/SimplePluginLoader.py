@@ -53,7 +53,6 @@ def initSettings():
     settings={
     'filepath':'',
     'pluginname':'',
-    'fileext':'',
     'functionname':'',
     'key':'',
     'shiftkey':False,
@@ -62,7 +61,7 @@ def initSettings():
     'startnotify':False,
     'stopnotify':False,
     'blockcall':False,
-    'showstderr':False,
+    'error':False,
     'exec': False,
     'executeable':False,
     'parameters':'',
@@ -74,16 +73,15 @@ def initSettings():
 
 def getPluginSettings(filepath, settings):
     try:
+        settings['file'] = filepath
         fileName, fileExtension = os.path.splitext(filepath)
         if (fileExtension and (fileExtension != '')): #if there is an extension
-            settings['fileext'] = fileExtension.lower() #get extension
-            settings['loadable'] = settings['fileext'] == '.py' # only python is loadable
+            settings['loadable'] = (fileExtension.lower() == '.py') # only python is loadable
         filename = os.path.basename(filepath) #filename
         filename = os.path.splitext(filename)[0] #remove extension if we have one
         #remove pluginname seperated by __-__
         filenamehelper = filename.split('__-__')
         filename = filenamehelper[len(filenamehelper) - 1 ]
-        settings['file'] = filepath
         settings['permission'] = os.access(filepath, os.X_OK )
         settings['pluginname'] = 'NoNameAvailable'
         if len(filenamehelper) == 2:
@@ -100,7 +98,7 @@ def getPluginSettings(filepath, settings):
         settings['startnotify'] = 'startnotify' in map(str.lower, filenamehelper)
         settings['stopnotify'] = 'stopnotify' in map(str.lower, filenamehelper)
         settings['blockcall'] = 'blockcall' in map(str.lower, filenamehelper)
-        settings['showstderr'] = 'showstderr' in map(str.lower, filenamehelper)
+        settings['error'] = 'error' in map(str.lower, filenamehelper)
         settings['exec'] = 'exec' in map(str.lower, filenamehelper)    
         settings['loadmodule'] = 'loadmodule' in map(str.lower, filenamehelper) 
         if not settings['loadmodule']:
@@ -131,7 +129,7 @@ def buildPluginSubprocess(settings):
     fun_body +="  message = ''\n"
     fun_body +="  if stdout:\n"
     fun_body +="    message += str(stdout, \"utf-8\")\n"
-    fun_body +="  if " + str(settings['showstderr']) +" and stderr:\n"
+    fun_body +="  if " + str(settings['error']) +" and stderr:\n"
     fun_body +="    message += ' error: ' + str(stderr, \"utf-8\")\n"
     fun_body +="  outputMessage( message)\n"
     if settings['stopnotify']:
