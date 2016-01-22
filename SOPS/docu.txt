@@ -37,7 +37,7 @@ startnotify = announce "start <description>" before the plugin is executed. this
 commands with longer progress times.
 stopnotify = announce "finish <description>". This is useful as feedback for plugins with no output.
 blockcall = don't start plugin in a thread, be careful, this locks orca until the plugin is finish
-showstderr = not only show stdout but also stderr
+error = announce thrown errors
 parameters <parameter1> [parameter2] [parameter3]... = passes the parameters to the plugin
 exec = run the plugin once while loading it.
 loadmodule = does not just create a subprocess but load it via python. 
