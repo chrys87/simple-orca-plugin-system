@@ -1,3 +1,6 @@
+The full onlinedocumentation is located here:
+https://wiki.archlinux.org/index.php/Simple_Orca_Plugin_System
+
 1. How to write a plugin:
 
 1.1 File name:
