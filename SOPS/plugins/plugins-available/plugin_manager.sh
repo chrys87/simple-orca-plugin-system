@@ -44,11 +44,11 @@ configure_plugins()
 {
 local ifs="$IFS"
 IFS=$'\n'
-local pluginList="$(ls -1 ${xdgPath}/plugins-available/*-*.*)"
+local pluginList="$(ls -1 ${xdgPath}/plugins-available/*__-__*.*)"
 if [ -n "$pluginList" ]; then
 pluginList="${pluginList}"$'\n'
 fi
-pluginList="${pluginList}$(ls -1 /usr/share/SOPS/plugins/plugins-available/*-*.*)"
+pluginList="${pluginList}$(ls -1 /usr/share/SOPS/plugins/plugins-available/*__-__*.*)"
 local pluginName=""
 declare -A local pluginPath
 local checkList=""
@@ -98,7 +98,7 @@ fi
 local keyList=""
 checkList="$(echo {a..z} {0..9} | sed 's/\([a-z]\)/FALSE \1/g')" #Keys
 checkList="FALSE alt FALSE control FALSE shift $checkList" #Modifier
-checkList="FALSE loadmodule FALSE exec FALSE startnotify FALSE stopnotify FALSE showstderr FALSE parameters FALSE blockcall $checkList" #commands
+checkList="FALSE loadmodule FALSE exec FALSE startnotify FALSE stopnotify FALSE error FALSE parameters FALSE blockcall $checkList" #commands
 
 for i in $items ; do
 fileName="$(zenity --list --title "Simple Orca Plugin Manager" --text "Select keyboard shortcut for $i:" --checklist --separator __+__ --column "" --column "Keys" $checkList)"
