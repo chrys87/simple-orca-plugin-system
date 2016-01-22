@@ -5,7 +5,6 @@
 import glob
 import os
 import importlib.util
-import subprocess
 import random
 import string
 import _thread
