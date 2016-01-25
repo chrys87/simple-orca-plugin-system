@@ -7,10 +7,10 @@ https://wiki.archlinux.org/index.php/Simple_Orca_Plugin_System
 the description have to be seperated to the oter parts wtih __-__
 the commands, modifier and the key has to be seperated by __+__
 structure
-<description>__-__[<command>__+__command...][__+__<modifier>__+__<modiier>__+__]<key char>.sh
+<description>__-__[<command>__+__command...][__+__<modifier>__+__<modiier>__+__<key char>].sh
 structure examples:
-description__-__<command>__+__control__+__alt__+__<key char>.sh
-description__-__<command>__+__<command>__+__shift__+__<key char>.py
+description__-__<command>__+__control__+__alt__+__key_y.sh
+description__-__<command>__+__<command>__+__shift__+__key_y.py
 description__-__<key char>.py
 
 The file could be any type of script or application. It just have to send to STD out.
@@ -29,19 +29,16 @@ control (description__-__control__+__w.sh)
 shift (description__-__shift+w.sh)
 control + alt (description__-__control+alt+w.sh)
 
-1.2.2 Key
-<Key char> is a single character. You have to set a <Key char> or use the exec command for running once at start.
-d.sh uses orca + d as shortcut. The <char> has to be always the last character in 
-The file name before the extension starts.
-
-1.2.3 Commands and Plugin settings
-with <command> you could control the behavior of the plugins. you could add more than one command. the order is optional. 
+1.2.2 Commands and Plugin settings
+with <command> you could control the behavior of the plugins. you could add more than one command. the order is optional.
+key_<key> = with this you assign the current shortcut key.You have to set a <Key> or use the exec command for running once at start.
+key_d.sh uses orca + d as shortcut. The <char> has to be always the last character in The file name before the extension starts.
 startnotify = announce "start <description>" before the plugin is executed. this useful as feedback for 
 commands with longer progress times.
 stopnotify = announce "finish <description>". This is useful as feedback for plugins with no output.
 blockcall = don't start plugin in a thread, be careful, this locks orca until the plugin is finish
 error = announce thrown errors
-parameters <parameter1> [parameter2] [parameter3]... = passes the parameters to the plugin
+parameters_<parameter1> [parameter2] [parameter3]... = passes the parameters to the plugin
 exec = run the plugin once while loading it.
 loadmodule = does not just create a subprocess but load it via python. 
 You have all the power for real orca scripting). 
@@ -55,10 +52,10 @@ chmod +x <youplugin>
 1.3.1 simple-plugin (subprocess):
 Just normal shell, Perl, python  scripts. orca will read the STD out (examples included)
 basic plugin example for hello world while pressing ORCA+y:
-<example Hello_world__-__y.sh >
+<example Hello_world__-__key_y.sh >
 #!/bin/sh
 echo "Hello World"
-</example Hello_world__-__y.sh >
+</example Hello_world__-__key_y.sh >
 1.3.2 advanced-plugin (spec.loader.exec_module):
 replace the ! with the word bang while loading first.
 <example replace_chnames__-__loadmodule__+__exec.py >
