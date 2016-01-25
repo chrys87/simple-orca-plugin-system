@@ -37,7 +37,7 @@ cd "/usr/share/SOPS/plugins/plugins-available/"
 ../../tools/ensop plugin_manager.sh
 
 cd "$HOME/.config/SOPS/plugins-enabled"
-mv workspacenumber.sh workspacenumber__-__x.sh
-mv clipboard.py clipboard__-__c.py
-mv plugin_manager.sh plugin_manager__-__control__+__p.sh
+mv workspacenumber.sh workspacenumber__-__key_x.sh
+mv clipboard.py clipboard__-__key_c.py
+mv plugin_manager.sh plugin_manager__-__control__+__key_p.sh
 exit 0

@@ -88,10 +88,14 @@ def getPluginSettings(filepath, settings):
             settings['pluginname'] = filenamehelper[0]
         #now get shortcuts seperated by __+__
         filenamehelper = filename.split('__+__')
-        if len([y for y in filenamehelper if 'parameters' in y.lower()]) == 1:
-            settings['parameters'] = [y for y in filenamehelper if 'parameters' in y.lower()][0]
-            settings['parameters'] = settings['parameters'][10:]
-        settings['key'] = filenamehelper[len(filenamehelper) - 1].lower()
+        if len([y for y in filenamehelper if 'parameters_' in y.lower()]) == 1 and\
+          len([y for y in filenamehelper if 'parameters_' in y.lower()][0]) > 11:
+            settings['parameters'] = [y for y in filenamehelper if 'parameters_' in y.lower()][0][11:]
+        if len([y for y in filenamehelper if 'key_' in y.lower()]) == 1 and\
+          len([y for y in filenamehelper if 'key_' in y.lower()][0]) == 5 :
+            settings['key'] = [y for y in filenamehelper if 'key_' in y.lower()][0][4]
+        if settings['key'] == '':
+            settings['key'] = filenamehelper[len(filenamehelper) - 1].lower()
         settings['shiftkey'] = 'shift' in map(str.lower, filenamehelper)
         settings['ctrlkey'] = 'control' in map(str.lower, filenamehelper)
         settings['altkey'] = 'alt' in map(str.lower, filenamehelper)
@@ -152,7 +156,8 @@ def buildPluginExec(settings):
     fun_body += "    spec.loader.exec_module(" + settings['functionname'] + "Module)\n"
     fun_body += "  except:\n"
     fun_body += "    pass\n"
-    fun_body += "    outputMessage(\"Error while executing " + pluginname + "\")\n"
+    if settings['error']:
+        fun_body += "    outputMessage(\"Error while executing " + pluginname + "\")\n"
     if settings['stopnotify']:
         fun_body +="  outputMessage('finish " + pluginname + "')\n"
     fun_body += "  return True\n\n"
