@@ -67,7 +67,8 @@ def initSettings():
     'parameters':'',
     'function':None,
     'inputeventhandler':None,
-    'valid':False
+    'valid':False,
+    'supressoutput':False
     }
     return settings
 
@@ -103,6 +104,7 @@ def getPluginSettings(filepath, settings):
         settings['stopnotify'] = 'stopnotify' in map(str.lower, filenamehelper)
         settings['blockcall'] = 'blockcall' in map(str.lower, filenamehelper)
         settings['error'] = 'error' in map(str.lower, filenamehelper)
+        settings['supressoutput'] = 'supressoutput' in map(str.lower, filenamehelper)
         settings['exec'] = 'exec' in map(str.lower, filenamehelper)    
         settings['loadmodule'] = 'loadmodule' in map(str.lower, filenamehelper) 
         if not settings['loadmodule']:
@@ -131,9 +133,9 @@ def buildPluginSubprocess(settings):
     fun_body +="  p = Popen(" + currplugin + ", stdout=PIPE, stderr=PIPE, shell=True)\n"
     fun_body +="  stdout, stderr = p.communicate()\n"
     fun_body +="  message = ''\n"
-    fun_body +="  if stdout:\n"
+    fun_body +="  if not " + str(settings['supressoutput']) + " and stdout:\n"
     fun_body +="    message += str(stdout, \"utf-8\")\n"
-    fun_body +="  if " + str(settings['error']) +" and stderr:\n"
+    fun_body +="  if " + str(settings['error']) + " and stderr:\n"
     fun_body +="    message += ' error: ' + str(stderr, \"utf-8\")\n"
     fun_body +="  outputMessage( message)\n"
     if settings['stopnotify']:
