@@ -92,7 +92,7 @@ def getPluginSettings(filepath, settings):
           len([y for y in filenamehelper if 'parameters_' in y.lower()][0]) > 11:
             settings['parameters'] = [y for y in filenamehelper if 'parameters_' in y.lower()][0][11:]
         if len([y for y in filenamehelper if 'key_' in y.lower()]) == 1 and\
-          len([y for y in filenamehelper if 'key_' in y.lower()][0]) == 5 :
+          len([y for y in filenamehelper if 'key_' in y.lower()][0]) > 4 :
             settings['key'] = [y for y in filenamehelper if 'key_' in y.lower()][0][4]
         if settings['key'] == '':
             settings['key'] = filenamehelper[len(filenamehelper) - 1].lower()
