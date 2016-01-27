@@ -9,16 +9,7 @@ install via packagemanager
 2. run as user:
 /usr/share/SOPS/install-for-current-user.sh # copy all the needed stuff to orca
 
-Wiki:
-The full documentatnion wiki is located here:
-https://wiki.archlinux.org/index.php/Simple_Orca_Plugin_System
-
-administration
-use ensop and dissop to enable and disable plugins on the commandline.
-You may also use the plugin manager included by default by pressing orca+CTRL+p.
-There are some testing plugins that are not activated by default.
-For writing plugins and more usage details see docu.txt.
-
+Wiki/ Documentation/ Usage/ Administration:
 for full documentation look into the ./docu.txt file or at
 https://wiki.archlinux.org/index.php/Simple_Orca_Plugin_System
 
