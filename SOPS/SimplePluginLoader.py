@@ -67,7 +67,8 @@ def initSettings():
     'parameters':'',
     'function':None,
     'inputeventhandler':None,
-    'valid':False
+    'valid':False,
+    'supressoutput':False
     }
     return settings
 
@@ -88,10 +89,14 @@ def getPluginSettings(filepath, settings):
             settings['pluginname'] = filenamehelper[0]
         #now get shortcuts seperated by __+__
         filenamehelper = filename.split('__+__')
-        if len([y for y in filenamehelper if 'parameters' in y.lower()]) == 1:
-            settings['parameters'] = [y for y in filenamehelper if 'parameters' in y.lower()][0]
-            settings['parameters'] = settings['parameters'][10:]
-        settings['key'] = filenamehelper[len(filenamehelper) - 1].lower()
+        if len([y for y in filenamehelper if 'parameters_' in y.lower()]) == 1 and\
+          len([y for y in filenamehelper if 'parameters_' in y.lower()][0]) > 11:
+            settings['parameters'] = [y for y in filenamehelper if 'parameters_' in y.lower()][0][11:]
+        if len([y for y in filenamehelper if 'key_' in y.lower()]) == 1 and\
+          len([y for y in filenamehelper if 'key_' in y.lower()][0]) > 4 :
+            settings['key'] = [y for y in filenamehelper if 'key_' in y.lower()][0][4]
+        if settings['key'] == '':
+            settings['key'] = filenamehelper[len(filenamehelper) - 1].lower()
         settings['shiftkey'] = 'shift' in map(str.lower, filenamehelper)
         settings['ctrlkey'] = 'control' in map(str.lower, filenamehelper)
         settings['altkey'] = 'alt' in map(str.lower, filenamehelper)
@@ -99,6 +104,7 @@ def getPluginSettings(filepath, settings):
         settings['stopnotify'] = 'stopnotify' in map(str.lower, filenamehelper)
         settings['blockcall'] = 'blockcall' in map(str.lower, filenamehelper)
         settings['error'] = 'error' in map(str.lower, filenamehelper)
+        settings['supressoutput'] = 'supressoutput' in map(str.lower, filenamehelper)
         settings['exec'] = 'exec' in map(str.lower, filenamehelper)    
         settings['loadmodule'] = 'loadmodule' in map(str.lower, filenamehelper) 
         if not settings['loadmodule']:
@@ -127,9 +133,9 @@ def buildPluginSubprocess(settings):
     fun_body +="  p = Popen(" + currplugin + ", stdout=PIPE, stderr=PIPE, shell=True)\n"
     fun_body +="  stdout, stderr = p.communicate()\n"
     fun_body +="  message = ''\n"
-    fun_body +="  if stdout:\n"
+    fun_body +="  if not " + str(settings['supressoutput']) + " and stdout:\n"
     fun_body +="    message += str(stdout, \"utf-8\")\n"
-    fun_body +="  if " + str(settings['error']) +" and stderr:\n"
+    fun_body +="  if " + str(settings['error']) + " and stderr:\n"
     fun_body +="    message += ' error: ' + str(stderr, \"utf-8\")\n"
     fun_body +="  outputMessage( message)\n"
     if settings['stopnotify']:
@@ -152,7 +158,8 @@ def buildPluginExec(settings):
     fun_body += "    spec.loader.exec_module(" + settings['functionname'] + "Module)\n"
     fun_body += "  except:\n"
     fun_body += "    pass\n"
-    fun_body += "    outputMessage(\"Error while executing " + pluginname + "\")\n"
+    if settings['error']:
+        fun_body += "    outputMessage(\"Error while executing " + pluginname + "\")\n"
     if settings['stopnotify']:
         fun_body +="  outputMessage('finish " + pluginname + "')\n"
     fun_body += "  return True\n\n"
