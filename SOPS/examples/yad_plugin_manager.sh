@@ -114,17 +114,27 @@ yad --plug=420 --tabnum=2 --text="Keybinding" --list --title "Simple Orca Plugin
 yad --plug=420 --tabnum=3 --text="Special" --list --title "Simple Orca Plugin Manager" --text "Select special options for $i:" --checklist --separator __+__ --column "" --column "Parameters" $specList >> "$output" &
 yad --plug=420 --tabnum=4 --text="Parameters" --form --separator "!" --title "Simple Orca Plugin Manager" --selectable-labels --field "Parameters for $i::lbl" --field "Exec:chk" --field "parameters:eb" >> "$output" &
 yad --notebook --key=420 --tab="Modifiers" --tab="Keybinding" --tab="Special" --tab="Parameters"
+cp "$output" /home/storm/tmp.txt
+# Read yad generated file into filenName variable, replacing single letter/number with key_letter/number and remove new lines
 fileName="$(cat "$output" | sed -e 's/^TRUE__+__\([a-z0-9]\)__+__$/key_\1__+__/' | tr -d $'\n')"
+# Proper format for control+alt modifier.
 fileName="${fileName//control\+alt/control__+__alt}"
+# Remove TRUE__+__
 fileName="${fileName//TRUE__+__/}"
+# Remove FALSE and extra !s
 fileName="${fileName//!FALSE!!/}"
 fileName="${fileName//!FALSE/}"
+# !TRUE or !TRUE!! is the exec flag.
+fileName="${fileName//!TRUE!!/exec__+__}"
 fileName="${fileName//!TRUE/exec__+__}"
+# Remove ! from the end of the file name sttring
 fileName="${fileName%!}"
+# What ever !s are left are parameters.
 fileName="${fileName//!/parameters_}"
+# There are several item separators in this, so remove any left over |s
 fileName="${fileName//|/}"
+# Remove any __+__ separators from the end of the file name.
 fileName="${fileName/%__+__/}"
-# fileName="$(yad --list --title "Simple Orca Plugin Manager" --text "Select keyboard shortcut for $i:" --checklist --separator __+__ --column "" --column "Keys" $checkList)"
 if [ -z "$fileName" ]; then
 exit 0
 fi
