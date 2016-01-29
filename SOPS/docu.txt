@@ -26,8 +26,9 @@ but if they are exist only a few combinations (predefined by orca) is valid:
 Valid modifier combinations:
 alt (description__-__alt__+__w.sh)
 control (description__-__control__+__w.sh)
-shift (description__-__shift+w.sh)
-control + alt (description__-__control+alt+w.sh)
+shift (description__-__shift__+__w.sh)
+control + alt (description__-__control__+__alt__+__w.sh)
+shift + alt (description__-__shift__+__alt__+__w.sh)
 
 1.2.2 Commands and Plugin settings
 with <command> you could control the behavior of the plugins. you could add more than one command. the order is optional.
