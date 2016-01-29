@@ -103,21 +103,21 @@ exit 0
 fi
 local keyList=""
 local alphaNumericList="$(echo {a..z} {0..9} | sed -e 's/\([a-z0-9]\)/FALSE \1/g' -e 's/FALSE a/TRUE a/')" #Keys
-local modifierList="FALSE alt FALSE control FALSE control+alt FALSE shift" #Modifier
+local modifierList="FALSE alt FALSE alt+shift FALSE control FALSE control+alt FALSE shift" #Modifier
 specList="FALSE startnotify FALSE stopnotify FALSE error FALSE blockcall" #commands
 
 # yad notebooks write to a file:
 local output="$(mktemp)"
 for i in $items ; do
-yad --plug=420 --tabnum=1 --text="Modifiers" --list --title "Simple Orca Plugin Manager" --text "Select modifier keys for $i:" --radiolist --separator __+__ --column "" --column "Keys" $modifierList >> "$output" &
-yad --plug=420 --tabnum=2 --text="Keybinding" --list --title "Simple Orca Plugin Manager" --text "Select keyboard shortcut for $i:" --radiolist --separator __+__ --column "" --column "Keys" $alphaNumericList >> "$output" &
-yad --plug=420 --tabnum=3 --text="Special" --list --title "Simple Orca Plugin Manager" --text "Select special options for $i:" --checklist --separator __+__ --column "" --column "Parameters" $specList >> "$output" &
-yad --plug=420 --tabnum=4 --text="Parameters" --form --separator "!" --title "Simple Orca Plugin Manager" --selectable-labels --field "Parameters for $i::lbl" --field "Exec:chk" --field "parameters:eb" >> "$output" &
-yad --notebook --key=420 --tab="Modifiers" --tab="Keybinding" --tab="Special" --tab="Parameters"
-cp "$output" /home/storm/tmp.txt
+yad --plug=420 --selectable-labels --tabnum=1 --text="Modifiers for $i" --list --title "Simple Orca Plugin Manager" --text "Select modifier keys for $i:" --radiolist --separator __+__ --column "" --column "Keys" $modifierList >> "$output" &
+yad --plug=420 --selectable-labels --tabnum=2 --text="Keybinding for $i" --list --title "Simple Orca Plugin Manager" --text "Select keyboard shortcut for $i:" --radiolist --separator __+__ --column "" --column "Keys" $alphaNumericList >> "$output" &
+yad --plug=420 --selectable-labels --tabnum=3 --text="Special for $i" --list --title "Simple Orca Plugin Manager" --text "Select special options for $i:" --checklist --separator __+__ --column "" --column "Parameters" $specList >> "$output" &
+yad --plug=420 --tabnum=4 --selectable-labels --text="Parameters for $i" --form --separator "!" --title "Simple Orca Plugin Manager" --selectable-labels --field "Parameters for $i::lbl" --field "Exec:chk" --field "parameters:eb" >> "$output" &
+yad --notebook --key=420 --tab="Modifiers for $i" --tab="Keybinding for $i" --tab="Special for $i" --tab="Parameters for $i"
 # Read yad generated file into filenName variable, replacing single letter/number with key_letter/number and remove new lines
 fileName="$(cat "$output" | sed -e 's/^TRUE__+__\([a-z0-9]\)__+__$/key_\1__+__/' | tr -d $'\n')"
-# Proper format for control+alt modifier.
+# Proper format for alt+shift and control+alt modifier.
+fileName="${fileName//alt\+shift/alt__+__shift}"
 fileName="${fileName//control\+alt/control__+__alt}"
 # Remove TRUE__+__
 fileName="${fileName//TRUE__+__/}"
@@ -142,8 +142,6 @@ fi
 rm "$output"
 fileName="${i%.*}__-__${fileName}.${i##*.}"
 echo "Installing ${i##*/}"
-echo "fileName is $fileName"
-exit 0
 wget -O "${xdgPath}/plugins-available/$fileName" "${pluginList[$i]}" || die "Could not download plugin $i from ${pluginList[$i]}"
 chmod +x "${xdgPath}/plugins-available/$fileName" || die "Could not set execute permissions for plugin $i"
 ln -s "${xdgPath}/plugins-available/$fileName" "${xdgPath}/plugins-enabled/$fileName" || die "Could not link plugin $i"
