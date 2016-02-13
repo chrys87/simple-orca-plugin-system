@@ -29,6 +29,55 @@ die()
         exit 1
 }
 
+get_keyboard_shortcut()
+{
+local alphaNumericList="$(echo {a..z} {0..9} | sed -e 's/\([a-z0-9]\)/FALSE \1/g')" #Keys
+local pluginFileName
+local p
+local keyList=""
+local modifierList="FALSE alt FALSE alt+shift FALSE control FALSE control+alt FALSE shift" #Modifier
+local __shortcutKey="$1"
+local specList="FALSE startnotify FALSE stopnotify FALSE error FALSE blockcall" #commands
+shift
+# yad notebooks write to a file:
+local output="$(mktemp)"
+for p in $@ ; do
+yad --plug=420 --selectable-labels --tabnum=1 --text="Modifiers for $p" --list --title "Simple Orca Plugin Manager" --text "Select modifier keys for $i:" --radiolist --separator __+__ --column "" --column "Keys" $modifierList >> "$output" &
+yad --plug=420 --selectable-labels --tabnum=2 --text="Keybinding for $p" --list --title "Simple Orca Plugin Manager" --text "Select keyboard shortcut for $i:" --radiolist --separator __+__ --column "" --column "Keys" $alphaNumericList >> "$output" &
+yad --plug=420 --selectable-labels --tabnum=3 --text="Special for $p" --list --title "Simple Orca Plugin Manager" --text "Select special options for $i:" --checklist --separator __+__ --column "" --column "Parameters" $specList >> "$output" &
+yad --plug=420 --tabnum=4 --selectable-labels --text="Parameters for $p" --form --separator "!" --title "Simple Orca Plugin Manager" --selectable-labels --field "Parameters for $i::lbl" --field "Exec:chk" --field "parameters:eb" >> "$output" &
+yad --notebook --key=420 --tab="Modifiers for $p" --tab="Keybinding for $p" --tab="Special for $p" --tab="Parameters for $p"
+# Read yad generated file into filenName variable, replacing single letter/number with key_letter/number and remove new lines
+pluginFileName="$(cat "$output" | sed -e 's/^TRUE__+__\([a-z0-9]\)__+__$/key_\1__+__/' | tr -d $'\n')"
+# Proper format for alt+shift and control+alt modifier.
+pluginFileName="${pluginFileName//alt\+shift/alt__+__shift}"
+pluginFileName="${pluginFileName//control\+alt/control__+__alt}"
+# Remove TRUE__+__
+pluginFileName="${pluginFileName//TRUE__+__/}"
+# Remove FALSE and extra !s
+pluginFileName="${pluginFileName//!FALSE!!/}"
+pluginFileName="${pluginFileName//!FALSE/}"
+# !TRUE or !TRUE!! is the exec flag.
+pluginFileName="${pluginFileName//!TRUE!!/exec__+__}"
+pluginFileName="${pluginFileName//!TRUE/exec__+__}"
+# Remove ! from the end of the file name sttring
+pluginFileName="${pluginFileName%!}"
+# What ever !s are left are parameters.
+pluginFileName="${pluginFileName//!/parameters_}"
+# There are several item separators in this, so remove any left over |s
+pluginFileName="${pluginFileName//|/}"
+# Remove any __+__ separators from the end of the file name.
+pluginFileName="${pluginFileName/%__+__/}"
+if [ -z "$pluginFileName" ]; then
+exit 0
+fi
+# Get rid of the temperary file
+rm "$output"
+pluginFileName="${p%.*}__-__${pluginFileName}.${p##*.}"
+eval $__shortcutKey="'$pluginFileName'"
+done
+}
+
 get_action()
 {
 local __actionVariable="$1"
@@ -66,7 +115,12 @@ else
 checkList="${checkList}FALSE"$'\n'"${pluginName}"$'\n'"Enabled"$'\n'
 fi
 done
-local items="$(yad --list --title "Simple Orca Plugin Manager" --text "Configure plugins:" --checklist --button "Toggle Selected Plugins:0" --button "Cancel:1" --separator $'\n' --column "" --column "Plugin" --column "Status" $checkList)"
+local items="$(yad --list --title "Simple Orca Plugin Manager" --text "Configure plugins:" --checklist --button "Toggle Selected Plugins:0" --button "Change Keyboard Shortcut:1" --button "Cancel:2" --separator $'\n' --column "" --column "Plugin" --column "Status" $checkList)"
+echo "$?" && exit 0
+if [ $? -eq 2 ]; then
+exit 0
+fi
+if [ $? -eq 0 ]; then
 for i in $items ; do
 if ! ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
 ln -s "${pluginPath[$i]}" "${xdgPath}/plugins-enabled/"
@@ -74,6 +128,17 @@ else
 unlink "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}"
 fi
 done
+fi
+
+if [ $? -eq 1 ]; then
+for i in $items ; do
+if ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
+unlink "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}"
+fi
+get_keyboard_shortcut fileName $i
+mv "${xdgPath}/plugins-available/$i" "${xdgPath}/plugins-available/$fileName" || die "Could not make new shortcut."
+done
+fi
 IFS="$ifs"
 if [ -n "$items" ]; then
 echo "Plugins updated! Restarting Orca..."
@@ -86,6 +151,7 @@ install_new_plugins()
 echo "Checking for plugins, please wait..."
 local i=""
 local checkList
+local fileName
 declare -A local pluginList=""
 local plugins
 for i in ${pluginSites[@]} ; do
@@ -101,46 +167,9 @@ items="${items//|/}"
 if [ -z "$items" ]; then
 exit 0
 fi
-local keyList=""
-local alphaNumericList="$(echo {a..z} {0..9} | sed -e 's/\([a-z0-9]\)/FALSE \1/g' -e 's/FALSE a/TRUE a/')" #Keys
-local modifierList="FALSE alt FALSE alt+shift FALSE control FALSE control+alt FALSE shift" #Modifier
-specList="FALSE startnotify FALSE stopnotify FALSE error FALSE blockcall" #commands
 
-# yad notebooks write to a file:
-local output="$(mktemp)"
 for i in $items ; do
-yad --plug=420 --selectable-labels --tabnum=1 --text="Modifiers for $i" --list --title "Simple Orca Plugin Manager" --text "Select modifier keys for $i:" --radiolist --separator __+__ --column "" --column "Keys" $modifierList >> "$output" &
-yad --plug=420 --selectable-labels --tabnum=2 --text="Keybinding for $i" --list --title "Simple Orca Plugin Manager" --text "Select keyboard shortcut for $i:" --radiolist --separator __+__ --column "" --column "Keys" $alphaNumericList >> "$output" &
-yad --plug=420 --selectable-labels --tabnum=3 --text="Special for $i" --list --title "Simple Orca Plugin Manager" --text "Select special options for $i:" --checklist --separator __+__ --column "" --column "Parameters" $specList >> "$output" &
-yad --plug=420 --tabnum=4 --selectable-labels --text="Parameters for $i" --form --separator "!" --title "Simple Orca Plugin Manager" --selectable-labels --field "Parameters for $i::lbl" --field "Exec:chk" --field "parameters:eb" >> "$output" &
-yad --notebook --key=420 --tab="Modifiers for $i" --tab="Keybinding for $i" --tab="Special for $i" --tab="Parameters for $i"
-# Read yad generated file into filenName variable, replacing single letter/number with key_letter/number and remove new lines
-fileName="$(cat "$output" | sed -e 's/^TRUE__+__\([a-z0-9]\)__+__$/key_\1__+__/' | tr -d $'\n')"
-# Proper format for alt+shift and control+alt modifier.
-fileName="${fileName//alt\+shift/alt__+__shift}"
-fileName="${fileName//control\+alt/control__+__alt}"
-# Remove TRUE__+__
-fileName="${fileName//TRUE__+__/}"
-# Remove FALSE and extra !s
-fileName="${fileName//!FALSE!!/}"
-fileName="${fileName//!FALSE/}"
-# !TRUE or !TRUE!! is the exec flag.
-fileName="${fileName//!TRUE!!/exec__+__}"
-fileName="${fileName//!TRUE/exec__+__}"
-# Remove ! from the end of the file name sttring
-fileName="${fileName%!}"
-# What ever !s are left are parameters.
-fileName="${fileName//!/parameters_}"
-# There are several item separators in this, so remove any left over |s
-fileName="${fileName//|/}"
-# Remove any __+__ separators from the end of the file name.
-fileName="${fileName/%__+__/}"
-if [ -z "$fileName" ]; then
-exit 0
-fi
-# Get rid of the temperary file
-rm "$output"
-fileName="${i%.*}__-__${fileName}.${i##*.}"
+get_keyboard_shortcut fileName $i
 echo "Installing ${i##*/}"
 wget -O "${xdgPath}/plugins-available/$fileName" "${pluginList[$i]}" || die "Could not download plugin $i from ${pluginList[$i]}"
 chmod +x "${xdgPath}/plugins-available/$fileName" || die "Could not set execute permissions for plugin $i"
