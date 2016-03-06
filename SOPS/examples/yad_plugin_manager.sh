@@ -144,7 +144,9 @@ for i in $items ; do
 if ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
 unlink "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}"
 fi
+IFS="$ifs"
 get_keyboard_shortcut fileName $i
+IFS=$'\n'
 mv "${xdgPath}/plugins-available/$i" "${xdgPath}/plugins-available/$fileName" || die "Could not make new shortcut."
 ln -s "${xdgPath}/plugins-available/$fileName" "${xdgPath}/plugins-enabled/$fileName" || die "Could not make symbolic link."
 done
