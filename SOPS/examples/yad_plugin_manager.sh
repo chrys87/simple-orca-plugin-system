@@ -115,11 +115,12 @@ else
 checkList="${checkList}FALSE"$'\n'"${pluginName}"$'\n'"Enabled"$'\n'
 fi
 done
-local items="$(yad --list --title "Simple Orca Plugin Manager" --text "Configure plugins:" --checklist --button "Toggle Selected Plugins:0" --button "Change Keyboard Shortcut:1" --button "Cancel:2" --separator $'\n' --column "" --column "Plugin" --column "Status" $checkList)"
-echo "$?" && exit 0
-if [ $? -eq 2 ]; then
-exit 0
+local items="$(yad --list --title "Simple Orca Plugin Manager" --text "Configure plugins:" --button "Toggle Selected Plugins:0" --button "Change Keyboard Shortcut:2" --button "Cancel:1" --checklist --separator $'\n' --column "" --column "Plugin" --column "Status" $checkList)"
+echo "$?"
+if [ $? -eq 1 ]; then
+close_simple_orca_plugin_manager
 fi
+echo "$items" && exit 0
 if [ $? -eq 0 ]; then
 for i in $items ; do
 if ! ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
