@@ -37,7 +37,7 @@ local p
 local keyList=""
 local modifierList="FALSE alt FALSE alt+shift FALSE control FALSE control+alt FALSE shift" #Modifier
 local __shortcutKey="$1"
-local specList="FALSE startnotify FALSE stopnotify FALSE error FALSE blockcall" #commands
+local specList="FALSE supressoutput FALSE startnotify FALSE stopnotify FALSE error FALSE blockcall" #commands
 shift
 # yad notebooks write to a file:
 local output="$(mktemp)"
