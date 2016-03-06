@@ -37,7 +37,7 @@ local p
 local keyList=""
 local modifierList="FALSE alt FALSE alt+shift FALSE control FALSE control+alt FALSE shift" #Modifier
 local __shortcutKey="$1"
-local specList="FALSE supressoutput FALSE startnotify FALSE stopnotify FALSE error FALSE blockcall" #commands
+local specList="FALSE supressoutput FALSE startnotify FALSE stopnotify FALSE loadmodule FALSE error FALSE blockcall" #commands
 shift
 # yad notebooks write to a file:
 local output="$(mktemp)"
@@ -147,8 +147,7 @@ fi
 IFS="$ifs"
 get_keyboard_shortcut fileName $i
 IFS=$'\n'
-mv "${xdgPath}/plugins-available/$i" "${xdgPath}/plugins-available/$fileName" || die "Could not make new shortcut."
-ln -s "${xdgPath}/plugins-available/$fileName" "${xdgPath}/plugins-enabled/$fileName" || die "Could not make symbolic link."
+mv "${pluginPath[$i]}" "${xdgPath}/plugins-available/$fileName" || die "Could not make new shortcut."
 done
 esac
 IFS="$ifs"
