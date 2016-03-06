@@ -117,10 +117,15 @@ fi
 done
 local items
 items="$(yad --list --title "Simple Orca Plugin Manager" --text "Configure plugins:" --button "Toggle Selected Plugins:0" --button "Change Keyboard Shortcut:2" --button "Cancel:1" --checklist --separator $'\n' --column "" --column "Plugin" --column "Status" $checkList)"
-if [ $? -eq 1 ]; then
+case $? in
+1)
 close_simple_orca_plugin_manager
-fi
-if [ $? -eq 0 ]; then
+;;
+0)
+items="${items//Disabled/}"
+items="${items//Enabled/}"
+items="${items//FALSE/}"
+items="${items//TRUE/}"
 for i in $items ; do
 if ! ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
 ln -s "${pluginPath[$i]}" "${xdgPath}/plugins-enabled/"
@@ -128,17 +133,22 @@ else
 unlink "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}"
 fi
 done
-fi
+;;
 
-if [ $? -eq 2 ]; then
+2)
+items="${items//Disabled/}"
+items="${items//Enabled/}"
+items="${items//FALSE/}"
+items="${items//TRUE/}"
 for i in $items ; do
 if ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
 unlink "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}"
 fi
 get_keyboard_shortcut fileName $i
 mv "${xdgPath}/plugins-available/$i" "${xdgPath}/plugins-available/$fileName" || die "Could not make new shortcut."
+ln -s "${xdgPath}/plugins-available/$fileName" "${xdgPath}/plugins-enabled/$fileName" || die "Could not make symbolic link."
 done
-fi
+esac
 IFS="$ifs"
 if [ -n "$items" ]; then
 echo "Plugins updated! Restarting Orca..."
