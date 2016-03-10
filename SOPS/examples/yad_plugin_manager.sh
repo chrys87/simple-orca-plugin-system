@@ -145,7 +145,7 @@ if ls -1 "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}" &> /dev/null ; then
 unlink "${xdgPath}/plugins-enabled/${pluginPath[$i]##*/}"
 fi
 IFS="$ifs"
-get_keyboard_shortcut fileName ${pluginPath[$i]##*/}
+get_keyboard_shortcut fileName "${i}.${pluginPath[$i]##*\.}"
 IFS=$'\n'
 mv "${pluginPath[$i]}" "${xdgPath}/plugins-available/$fileName" || die "Could not make new shortcut."
 done
