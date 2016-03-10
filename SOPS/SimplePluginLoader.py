@@ -43,7 +43,7 @@ def SetupShortcutAndHandle( settings):
     # orca + shift
     if settings['shiftkey'] and not settings['ctrlkey'] and not settings['altkey']:
         myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.defaultModifierMask, orca.keybindings.ORCA_SHIFT_MODIFIER_MASK, settings['inputeventhandler']))
-    # orca + alt + shift
+    # alt + shift
     if settings['shiftkey'] and not settings['ctrlkey'] and settings['altkey']:
         myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.defaultModifierMask, orca.keybindings.SHIFT_ALT_MODIFIER_MASK, settings['inputeventhandler']))
 
