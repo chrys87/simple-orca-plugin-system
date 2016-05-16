@@ -81,7 +81,7 @@ done
 get_action()
 {
 local __actionVariable="$1"
-answer="$(yad --list --title "Simple Orca Plugin Manager" --text "Select an action:" --column "Select an Action" "Configure Plugins" "Install New Plugins" "Close Simple Orca Plugin Manager")"
+answer="$(yad --list --title "Simple Orca Plugin Manager" --text "Select an action:" --column "Select an Action" "Configure Plugins" "Install New Plugins" "Open Plugins Directory" "Close Simple Orca Plugin Manager")"
 if [ $? -ne 0 ]; then
 # Cancel or something other than an action was chosen, so close.
 exit 0
@@ -191,6 +191,11 @@ if [ -n "$i" ]; then
 echo "Restarting orca"
 orca -r &
 fi
+}
+
+open_plugins_directory()
+{
+xdg-open "$HOME/.config/SOPS/plugins-available/"
 }
 
 close_simple_orca_plugin_manager()
