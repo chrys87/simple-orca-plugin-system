@@ -110,6 +110,7 @@ def getPluginSettings(filepath, settings):
         settings['supressoutput'] = 'supressoutput' in map(str.lower, filenamehelper)
         settings['exec'] = 'exec' in map(str.lower, filenamehelper)    
         settings['loadmodule'] = 'loadmodule' in map(str.lower, filenamehelper) 
+        settings = readSettingsFromPlugin(settings)
         if not settings['loadmodule']:
             if not settings['permission']: #subprocessing only works with exec permission
                 return initSettings()
@@ -124,6 +125,31 @@ def getPluginSettings(filepath, settings):
         return settings
     except:
         return initSettings()
+
+def readSettingsFromPlugin(settings):
+    if not os.access(settings['file'], os.R_OK ):
+        return settings
+    fileName, fileExtension = os.path.splitext(settings['file'])
+    if (fileExtension and (fileExtension != '')): #if there is an extension
+        if (fileExtension.lower() != '.py') and \
+          (fileExtension.lower() != '.sh'):
+            return settings
+    else:
+        return settings
+
+    with open(settings['file'], "r") as pluginFile:
+        for line in pluginFile:
+            settings['shiftkey'] = ('sopsproperty:shift' in line.lower().replace(" ", "")) or settings['shiftkey']
+            settings['ctrlkey'] = ('sopsproperty:control' in line.lower().replace(" ", "")) or settings['ctrlkey']
+            settings['altkey'] = ('sopsproperty:alt' in line.lower().replace(" ", "")) or settings['altkey']
+            settings['startnotify'] = ('sopsproperty:startnotify' in line.lower().replace(" ", "")) or settings['startnotify']
+            settings['stopnotify'] = ('sopsproperty:stopnotify' in line.lower().replace(" ", "")) or settings['stopnotify']
+            settings['blockcall'] = ('sopsproperty:blockcall' in line.lower().replace(" ", "")) or settings['blockcall']
+            settings['error'] = ('sopsproperty:error' in line.lower().replace(" ", "")) or settings['error']
+            settings['supressoutput'] = ('sopsproperty:supressoutput' in line.lower().replace(" ", "")) or settings['supressoutput']
+            settings['exec'] = ('sopsproperty:exec' in line.lower().replace(" ", "")) or settings['exec']
+            settings['loadmodule'] = ('sopsproperty:loadmodule' in line.lower().replace(" ", "")) or settings['loadmodule']
+    return settings
 
 def buildPluginSubprocess(settings):
     currplugin = "\'\"" + settings['file'] + "\" " + settings['parameters'] + "\'"
