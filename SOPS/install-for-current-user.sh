@@ -23,13 +23,13 @@ ln -s "/usr/share/SOPS/SimplePluginLoader.py" $xdgPath/SOPS/
 # include it in orca
 echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "# Start SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "try:"
+echo "try:" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "  import importlib.util, os" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "  spec = importlib.util.spec_from_file_location('SimplePluginLoader', os.path.expanduser('~')+'/.config/SOPS/SimplePluginLoader.py')" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "  SimplePluginLoaderModule = importlib.util.module_from_spec(spec)" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "  spec.loader.exec_module(SimplePluginLoaderModule)" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "except:"
-echo "  pass"
+echo "except Exception as e:" >> "$HOME/.local/share/orca/orca-customizations.py"
+echo "  print('Problem while loading SOPS:' + str(e))" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "# End SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$HOME/.local/share/orca/orca-customizations.py"
 echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
 
