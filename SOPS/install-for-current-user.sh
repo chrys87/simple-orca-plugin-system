@@ -1,4 +1,7 @@
 #!/bin/sh
+set -e
+
+SCRIPT_SRC=$(dirname $0)
 
 # Make sure this isn't ran as root:
 if [ "$(whoami)" = "root" ]; then
@@ -7,8 +10,8 @@ exit 1
 fi
 
 # is it already installed? so break
-if [ -e "$HOME/.local/share/orca/orca-customizations.py" ]; then
-    if grep -q "spec.loader.exec_module(SimplePluginLoaderModule)" "$HOME/.local/share/orca/orca-customizations.py"; then
+if [ -e "$CUSTOMIZATIONS" ]; then
+    if grep -q "spec.loader.exec_module(SimplePluginLoaderModule)" "$CUSTOMIZATIONS"; then
         echo "Simple Orca Plugin System is already installed for this user"
         exit 1
     fi
@@ -18,23 +21,27 @@ fi
 xdgPath="${XDG_CONFIG_HOME:-$HOME/.config}"
 mkdir -p "$xdgPath/SOPS/plugins-available"
 mkdir -p "$xdgPath/SOPS/plugins-enabled"
-ln -s "/usr/share/SOPS/SimplePluginLoader.py" $xdgPath/SOPS/
+cp "$SCRIPT_SRC/SimplePluginLoader.py" $xdgPath/SOPS/
 
 # include it in orca
-echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "# Start SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "try:" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "  import importlib.util, os" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "  spec = importlib.util.spec_from_file_location('SimplePluginLoader', os.path.expanduser('~')+'/.config/SOPS/SimplePluginLoader.py')" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "  SimplePluginLoaderModule = importlib.util.module_from_spec(spec)" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "  spec.loader.exec_module(SimplePluginLoaderModule)" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "except Exception as e:" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "  print('Problem while loading SOPS:' + str(e))" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "# End SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$HOME/.local/share/orca/orca-customizations.py"
-echo "" >> "$HOME/.local/share/orca/orca-customizations.py"
+CUSTOMIZATIONS="$HOME/.local/share/orca/orca-customizations.py"
+if ! [ -f `dirname "$CUSTOMIZATIONS"` ]; then
+	mkdir -p `dirname "$CUSTOMIZATIONS"`
+fi
+echo >> "$CUSTOMIZATIONS"
+echo "# Start SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$CUSTOMIZATIONS"
+echo "try:" >> "$CUSTOMIZATIONS"
+echo "  import importlib.util, os" >> "$CUSTOMIZATIONS"
+echo "  spec = importlib.util.spec_from_file_location('SimplePluginLoader', os.path.expanduser('~')+'/.config/SOPS/SimplePluginLoader.py')" >> "$CUSTOMIZATIONS"
+echo "  SimplePluginLoaderModule = importlib.util.module_from_spec(spec)" >> "$CUSTOMIZATIONS"
+echo "  spec.loader.exec_module(SimplePluginLoaderModule)" >> "$CUSTOMIZATIONS"
+echo "except Exception as e:" >> "$CUSTOMIZATIONS"
+echo "  print('Problem while loading SOPS:' + str(e))" >> "$CUSTOMIZATIONS"
+echo "# End SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$CUSTOMIZATIONS"
+echo "" >> "$CUSTOMIZATIONS"
 
 #enable some scripts by default
-cd "/usr/share/SOPS/plugins/plugins-available/"
+cd "$SCRIPT_SRC/plugins/plugins-available/"
 ../../tools/ensop workspacenumber.sh
 ../../tools/ensop clipboard.py
 ../../tools/ensop plugin_manager.sh
