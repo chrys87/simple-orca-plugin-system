@@ -12,10 +12,9 @@ Manual Installation
     /usr/share/SOAPS:
 
         sudo cp -dpr . /usr/share/SOAPS
-    and change to this directory.
 2.  As user, run:
 
-        sh install-for-current-user.sh
+        sh /usr/share/install-for-current-user.sh
 
     This installs the plugin locally and registers a few default plugins with
     Orca.

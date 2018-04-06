@@ -1,7 +1,8 @@
 #!/bin/sh
 set -e
 
-SCRIPT_SRC=$(dirname $0)
+SCRIPT_SRC=`readlink -f $0`
+SCRIPT_SRC=$(dirname $SCRIPT_SRC)
 
 # Make sure this isn't ran as root:
 if [ "$(whoami)" = "root" ]; then
@@ -21,7 +22,7 @@ fi
 xdgPath="${XDG_CONFIG_HOME:-$HOME/.config}"
 mkdir -p "$xdgPath/SOPS/plugins-available"
 mkdir -p "$xdgPath/SOPS/plugins-enabled"
-cp "$SCRIPT_SRC/SimplePluginLoader.py" $xdgPath/SOPS/
+ln -s "$SCRIPT_SRC/SimplePluginLoader.py" $xdgPath/SOPS/
 
 # include it in orca
 CUSTOMIZATIONS="$HOME/.local/share/orca/orca-customizations.py"
@@ -41,10 +42,10 @@ echo "# End SimpleOrcaPluginLoader DO NOT TOUCH!" >> "$CUSTOMIZATIONS"
 echo "" >> "$CUSTOMIZATIONS"
 
 #enable some scripts by default
-cd "$SCRIPT_SRC/plugins/plugins-available/"
-../../tools/ensop workspacenumber.sh
-../../tools/ensop clipboard.py
-../../tools/ensop plugin_manager.sh
+TOOLSDIR=$SCRIPT_SRC/tools
+$TOOLSDIR/ensop workspacenumber.sh
+$TOOLSDIR/ensop clipboard.py
+$TOOLSDIR/ensop plugin_manager.sh
 
 cd "$HOME/.config/SOPS/plugins-enabled"
 mv workspacenumber.sh workspacenumber__-__key_x.sh

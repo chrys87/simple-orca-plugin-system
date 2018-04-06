@@ -1,19 +1,25 @@
 #!/bin/bash
+set -e
 
-installpath="/usr/share/SOPS"
-pluginpath="${XDG_CONFIG_HOME:-$HOME/.config}/SOPS/plugins-enabled"
+# usually /usr/share/SOAPS, but can be anywhere
+installpath=`dirname $0`/..
+installpath=`readlink -f $installpath` # get absolute path
+inst_pluginpath=$installpath/plugins/plugins-available
+# user-local path to available plugins
+plugins_available="${XDG_CONFIG_HOME:-$HOME/.config}/SOPS/plugins-available"
+plugins_enabled="${XDG_CONFIG_HOME:-$HOME/.config}/SOPS/plugins-enabled"
 filename="${1##*/}"
 # Error checking, make sure the plugin actually exists
-if ! [ -f "$1" ]; then
+if ! [ -f "$inst_pluginpath/$1" ]; then
     echo "Plugin $filename not found."
     exit 1
 fi
 
-if [ -e "$pluginpath/$filename" ]; then
+if [ -e "$plugins_enabled/$filename" ]; then
     echo "$1 is already enabled."
     exit 1
 else
-    mkdir -p "$pluginpath/"
-    ln -s "$installpath/plugins/plugins-available/$filename" "$pluginpath/"
+    mkdir -p "$plugins_enabled/"
+    ln -s "$inst_pluginpath/$filename" "$plugins_enabled/"
 fi
 exit 0
