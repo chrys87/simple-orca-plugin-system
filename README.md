@@ -1,8 +1,8 @@
 SOAPS — Simple Orca Plugin System
 ===================================
 
-SOAPS provides a simple way to write custom plugins for Orca. It requires Orca
-to be installed.
+SOAPS provides a simple way to write custom plugins for screen  reader Orca. It
+requires Orca to be installed.
 
 Manual Installation
 -------------------
@@ -19,8 +19,8 @@ Manual Installation
     This installs the plugin locally and registers a few default plugins with
     Orca.
 
-install via packagemanager
---------------------------
+install via package manager
+---------------------------
 
 
 *Archlinux AUR - simpleorcapluginsystem-git, run as user:*
@@ -30,8 +30,7 @@ sh /usr/share/SOPS/install-for-current-user.sh # copy all the needed stuff to or
 Wiki/ Documentation/ Usage/ Administration:
 -------------------------------------------
 
-
-for full documentation look into the ./docu.txt file or at
+For full documentation look into the ./docu.txt file or at
 https://wiki.archlinux.org/index.php/Simple_Orca_Plugin_System
 
 Uninstallation
