@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # an example for import an advanced plugin
 # loaded just once on starting orca (exec)
