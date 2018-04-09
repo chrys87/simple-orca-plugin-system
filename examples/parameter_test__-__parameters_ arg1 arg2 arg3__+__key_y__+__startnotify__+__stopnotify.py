@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #could used to print parameters passed by "parameters arg1 arg2 arg3"
 
