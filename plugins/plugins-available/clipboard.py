@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # just print the clipboard content. youst GTK3 GDK needed
 
