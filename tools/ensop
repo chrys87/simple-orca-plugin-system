@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# usually /usr/share/SOAPS, but can be anywhere
+# usually /usr/share/SOPS, but can be anywhere
 installpath=`dirname $0`/..
 installpath=`readlink -f $installpath` # get absolute path
 inst_pluginpath=$installpath/plugins/plugins-available

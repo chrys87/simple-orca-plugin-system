@@ -1,7 +1,7 @@
-SOAPS — Simple Orca Plugin System
+SOPS — Simple Orca Plugin System
 ===================================
 
-SOAPS provides a simple way to write custom plugins for screen  reader Orca. It
+SOPS provides a simple way to write custom plugins for screen  reader Orca. It
 requires Orca to be installed.
 
 Manual Installation
@@ -9,9 +9,9 @@ Manual Installation
 
 
 0.  If you want to install this software system-wide, copy this directory to
-    /usr/share/SOAPS:
+    /usr/share/SOPS:
 
-        sudo cp -dpr . /usr/share/SOAPS
+        sudo cp -dpr . /usr/share/SOPS
 2.  As user, run:
 
         sh /usr/share/install-for-current-user.sh
