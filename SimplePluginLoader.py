@@ -97,7 +97,7 @@ def getPluginSettings(filepath, settings):
             settings['parameters'] = [y for y in filenamehelper if 'parameters_' in y.lower()][0][11:]
         if len([y for y in filenamehelper if 'key_' in y.lower()]) == 1 and\
           len([y for y in filenamehelper if 'key_' in y.lower()][0]) > 4 :
-            settings['key'] = [y for y in filenamehelper if 'key_' in y.lower()][0][4]
+            settings['key'] = [y for y in filenamehelper if 'key_' in y.lower()][0][4:]
         if settings['key'] == '':
             settings['key'] = filenamehelper[len(filenamehelper) - 1].lower()
         settings['shiftkey'] = 'shift' in map(str.lower, filenamehelper)
@@ -116,7 +116,7 @@ def getPluginSettings(filepath, settings):
                 return initSettings()
         if settings['loadmodule'] and not settings['loadable']: #sorry.. its not loadable only .py is loadable
             return initSettings()
-        if (len(settings['key']) > 1): #no shortcut
+        if (len(settings['key']) < 1): #no shortcut
             if not settings['exec']: # and no exec -> the plugin make no sense because it isnt hooked anywhere
                 return initSettings() #so not load it (sets valid = False)
             else:
@@ -207,7 +207,6 @@ if not loaded:
     for currplugin in pluginlist:
         settings = initSettings()
         settings = getPluginSettings(currplugin, settings)
-
         if not settings['valid']:
             continue
             
