@@ -41,7 +41,7 @@ class NvdaStyleSpeechControlUp:
             'volume': self._change_volume,
             'pitch': self._change_pitch
         }
-        
+
     def _getProfiles(self):
         return self._settingsManager.availableProfiles()
 
@@ -55,7 +55,7 @@ class NvdaStyleSpeechControlUp:
             f.close()
         except FileNotFoundError:
             l = ""
-    
+
         return re.sub(r'( *languages *= *\( *)|( *\))|( {2:})|(\r|\n)', '', l).split(' ')
 
     def _getProfile(self):
@@ -72,14 +72,8 @@ class NvdaStyleSpeechControlUp:
             key = key.rstrip('\r\n')
         except FileNotFoundError:
             key = 'volume'
-    
-        return key
 
-    def _saveControl(self, control):
-        f=open(TMP_FILE, 'w')
-        f.write(control)
-        f.close()
-        self._control = control
+        return key
 
     def _createLanguageProfiles(self):
         languages = self._getCurrentLanguages()
@@ -131,7 +125,7 @@ class NvdaStyleSpeechControlUp:
             increaseSpeechVolume()
         else:
             decreaseSpeechVolume()
-            
+
     def _change_pitch(self, ac):
         if ac == 'u':
             increaseSpeechPitch()
@@ -156,18 +150,9 @@ class NvdaStyleSpeechControlUp:
         if language:
             msg = language
             speak(msg)
-            
+
     def up(self):
         self._functions[self._control]('u')
-        
-    def down(self):
-        self._functions[self._control]('u')
-
-    def left(self):
-        self._changeControl('l')
-
-    def right(self):
-        self._changeControl('r')
 
 f = NvdaStyleSpeechControlUp()
 f.up()

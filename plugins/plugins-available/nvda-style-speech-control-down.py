@@ -28,7 +28,7 @@ import re
 TMP_FILE = "/tmp/OrcaChange" # file used to store the current functioRAT
 LANGUAGE_file = "/etc/languages" # language files
 LANG_PREF = 'f123-language-' #prefix to new profiles
-_controls = [ 'volume', 'rate', 'pitch', 'language']
+
 class NvdaStyleSpeechControlDown:
     _settingsManager = getSettingsManager()
     _control = None
@@ -61,9 +61,6 @@ class NvdaStyleSpeechControlDown:
     def _getProfile(self):
         return self._settingsManager.getProfile()
 
-    def getFunction(self, fn):
-        return getattr(self, fn, None)
-
     def _getControl(self):
         try:
             f = open(TMP_FILE, "r")
@@ -74,12 +71,6 @@ class NvdaStyleSpeechControlDown:
             key = 'volume'
     
         return key
-
-    def _saveControl(self, control):
-        f=open(TMP_FILE, 'w')
-        f.write(control)
-        f.close()
-        self._control = control
 
     def _createLanguageProfiles(self):
         languages = self._getCurrentLanguages()
@@ -107,19 +98,6 @@ class NvdaStyleSpeechControlDown:
         self._setFamily(general['voices'], language)
         self._settingsManager._backend.saveProfileSettings(profileName, general, {}, {})
 
-    def _changeControl(self, ac):
-        increment = 1 if ac == 'r' else -1
-        control = self._control
-        index = (_controls.index(control) if control in _controls else -1) + increment
-        if index < 0:
-            index = len(_controls)  - 1
-        elif index >= len(_controls):
-            index = 0
-        control = _controls[index]
-        self._saveControl(control)
-        msg = "Now changing %s" % control
-        print(msg)
-
     def _change_rate(self, ac):
         if ac == 'u':
             increaseSpeechRate()
@@ -131,7 +109,7 @@ class NvdaStyleSpeechControlDown:
             increaseSpeechVolume()
         else:
             decreaseSpeechVolume()
-            
+
     def _change_pitch(self, ac):
         if ac == 'u':
             increaseSpeechPitch()
@@ -156,18 +134,9 @@ class NvdaStyleSpeechControlDown:
         if language:
             msg = language
             speak(msg)
-            
-    def up(self):
-        self._functions[self._control]('u')
-        
+
     def down(self):
         self._functions[self._control]('d')
-
-    def left(self):
-        self._changeControl('l')
-
-    def right(self):
-        self._changeControl('r')
 
 f = NvdaStyleSpeechControlDown()
 f.down()
