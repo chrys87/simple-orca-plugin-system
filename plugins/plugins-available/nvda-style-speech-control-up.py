@@ -1,5 +1,4 @@
 #! /usr/bin/python
-# nvda-style-speech-control-up__-__error__+__loadmodule__+__control__+__key_Up
 
 #
 # Copyright 2019, F123 Consulting, <information@f123.org>
@@ -24,6 +23,11 @@
 from orca.orca import getSettingsManager
 from orca.speech import speak, decreaseSpeechPitch, increaseSpeechPitch, increaseSpeechRate, decreaseSpeechRate, increaseSpeechVolume, decreaseSpeechVolume
 import re
+#
+# properties
+# nvda-style-speech-control-up__-__control__+__key_Up
+# sopsproperty:error
+# sopsproperty:loadmodule
 
 TMP_FILE = "/tmp/OrcaChange" # file used to store the current functioRAT
 LANGUAGE_file = "/etc/languages" # language files

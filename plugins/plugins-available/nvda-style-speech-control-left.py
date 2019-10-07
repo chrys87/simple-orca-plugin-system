@@ -1,5 +1,4 @@
 #! /usr/bin/python
-# nvda-style-speech-control-left__-__error__+__loadmodule__+__control__+__key_Left
 
 #
 # Copyright 2019, F123 Consulting, <information@f123.org>
@@ -22,6 +21,11 @@
 # 02110-1301, USA.
 #
 from orca.speech import speak
+#
+# properties
+# nvda-style-speech-control-left__-__control__+__key_Left
+# sopsproperty:error
+# sopsproperty:loadmodule
 
 TMP_FILE = "/tmp/OrcaChange" # file used to store the current function
 _controls = [ 'volume', 'rate', 'pitch', 'language']
