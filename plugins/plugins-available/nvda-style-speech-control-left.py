@@ -29,7 +29,8 @@ TMP_FILE = "/tmp/OrcaChange" # file used to store the current functioRAT
 LANGUAGE_file = "/etc/languages" # language files
 LANG_PREF = 'f123-language-' #prefix to new profiles
 _controls = [ 'volume', 'rate', 'pitch', 'language']
-class Functions:
+
+class NvdaStyleSpeechControlLeft:
     _settingsManager = getSettingsManager()
     _control = None
     _functions = None
@@ -169,5 +170,6 @@ class Functions:
     def right(self):
         self._changeControl('r')
 
-f = Functions()
+
+f = NvdaStyleSpeechControlLeft()
 f.left()
