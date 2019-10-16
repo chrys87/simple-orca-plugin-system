@@ -177,7 +177,7 @@ def buildPluginSubprocess(settings):
 def buildPluginExec(settings):
     pluginname = settings['pluginname']
     if settings['blockcall']:
-       pluginname = "blocking " + pluginname
+        pluginname = "blocking " + pluginname
     fun_body = "def " + settings['functionname'] + "(script=None, inputEvent=None):\n"
     if settings['startnotify']:
         fun_body +="  outputMessage('start " + pluginname + "')\n"
@@ -197,9 +197,10 @@ def buildPluginExec(settings):
     return fun_body
 
 def getFunctionName(settings):
-    settings['functionname'] = ''
-    while settings['functionname'] == '' or settings['functionname'] + 'T' in globals() or settings['functionname'] in globals():
-        settings['functionname'] = id_generator()
+    fn = "_" + settings['pluginname'].replace("-", "_")
+    settings['functionname'] = fn
+    while settings['functionname'] == fn or settings['functionname'] + 'T' in globals() or settings['functionname'] in globals():
+        settings['functionname'] = id_generator() + fn
     return settings
 
 if not loaded:
