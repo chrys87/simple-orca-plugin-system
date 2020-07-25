@@ -6,7 +6,7 @@
 
 # Add sites to check to the pluginSites array.
 pluginSites=(
-    'https://stormdragon.tk/orca-plugins/index.php'
+    'https://billy.wolfe.casa/orca-plugins/index.php'
     )
 get_xdg_path()
 {
