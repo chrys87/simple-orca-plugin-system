@@ -20,8 +20,9 @@ fi
 
 #create structure in home
 xdgPath="${XDG_CONFIG_HOME:-$HOME/.config}"
-mkdir -p "$xdgPath/SOPS/plugins-available"
-mkdir -p "$xdgPath/SOPS/plugins-enabled"
+SOPSPath="${xdgPath}/SOPS"
+mkdir -p "${SOPSPath}/plugins-available"
+mkdir -p "${SOPSPath}/plugins-enabled"
 ln -s "$SCRIPT_SRC/SimplePluginLoader.py" $xdgPath/SOPS/
 
 # include it in orca
@@ -47,7 +48,7 @@ $TOOLSDIR/ensop workspacenumber.sh
 $TOOLSDIR/ensop clipboard.py
 $TOOLSDIR/ensop plugin_manager.sh
 
-cd "$HOME/.config/SOPS/plugins-enabled"
+cd "${SOPSPath}/plugins-enabled"
 mv workspacenumber.sh workspacenumber__-__key_x.sh
 mv clipboard.py clipboard__-__key_c.py
 mv plugin_manager.sh plugin_manager__-__supressoutput__+__control__+__key_p.sh
