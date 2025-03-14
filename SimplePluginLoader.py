@@ -30,22 +30,22 @@ def SetupShortcutAndHandle( settings):
     settings['inputeventhandler'] = orca.input_event.InputEventHandler(settings['function'], settings['pluginname'])
     # just the orca modifier
     if not settings['shiftkey'] and not settings['ctrlkey'] and not settings['altkey']:
-        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.ORCA_MODIFIER_MASK, orca.keybindings.ORCA_MODIFIER_MASK, settings['inputeventhandler']))
+        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.DEFAULT_MODIFIER_MASK, orca.keybindings.ORCA_MODIFIER_MASK, settings['inputeventhandler']))
     # orca + alt
     if not settings['shiftkey'] and not settings['ctrlkey'] and settings['altkey']:
-        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.ORCA_ALT_MODIFIER_MASK, orca.keybindings.ORCA_ALT_MODIFIER_MASK, settings['inputeventhandler']))
+        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.DEFAULT_MODIFIER_MASK, orca.keybindings.ORCA_ALT_MODIFIER_MASK, settings['inputeventhandler']))
     # orca + CTRL
     if not settings['shiftkey'] and settings['ctrlkey'] and not settings['altkey']:
-        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.ORCA_CTRL_MODIFIER_MASK, orca.keybindings.ORCA_CTRL_MODIFIER_MASK, settings['inputeventhandler']))
+        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.DEFAULT_MODIFIER_MASK, orca.keybindings.ORCA_CTRL_MODIFIER_MASK, settings['inputeventhandler']))
     # orca + alt + CTRL
     if not settings['shiftkey'] and settings['ctrlkey'] and settings['altkey']:
-        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.ORCA_CTRL_ALT_MODIFIER_MASK, orca.keybindings.ORCA_CTRL_ALT_MODIFIER_MASK, settings['inputeventhandler']))
+        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.DEFAULT_MODIFIER_MASK, orca.keybindings.ORCA_CTRL_ALT_MODIFIER_MASK, settings['inputeventhandler']))
     # orca + shift
     if settings['shiftkey'] and not settings['ctrlkey'] and not settings['altkey']:
-        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.ORCA_SHIFT_MODIFIER_MASK, orca.keybindings.ORCA_SHIFT_MODIFIER_MASK, settings['inputeventhandler']))
+        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.DEFAULT_MODIFIER_MASK, orca.keybindings.ORCA_SHIFT_MODIFIER_MASK, settings['inputeventhandler']))
     # alt + shift
     if settings['shiftkey'] and not settings['ctrlkey'] and settings['altkey']:
-        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.SHIFT_ALT_MODIFIER_MASK, orca.keybindings.SHIFT_ALT_MODIFIER_MASK, settings['inputeventhandler']))
+        myKeyBindings.add(orca.keybindings.KeyBinding(settings['key'], orca.keybindings.DEFAULT_MODIFIER_MASK, orca.keybindings.SHIFT_ALT_MODIFIER_MASK, settings['inputeventhandler']))
 
     orca.settings.keyBindingsMap["default"] = myKeyBindings
 
